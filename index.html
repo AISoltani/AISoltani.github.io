@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Amir Soltani — AI · Computer Vision · Deep Learning</title>
+<meta name="description" content="AI Engineer specializing in Computer Vision, Deep Learning, Medical AI, and Real-Time Perception Systems."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#04080f;
+  --bg2:#080e1a;
+  --bg3:#0d1525;
+  --cyan:#00d4ff;
+  --cyan2:#00a8cc;
+  --magenta:#ff2d78;
+  --violet:#7c3aed;
+  --gold:#f5b942;
+  --text:#e8edf5;
+  --muted:#6b7a99;
+  --border:rgba(0,212,255,0.12);
+  --card:rgba(13,21,37,0.8);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--cyan) var(--bg);}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--cyan2);border-radius:3px;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  overflow-x:hidden;
+  line-height:1.6;
+}
+
+/* ── CANVAS BACKGROUND ── */
+#neuralCanvas{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  z-index:0;pointer-events:none;opacity:0.35;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:0 5%;
+  height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(4,8,15,0.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:all 0.3s;
+}
+.nav-logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.6rem;
+  letter-spacing:0.12em;
+  background:linear-gradient(90deg,var(--cyan),var(--magenta));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{
+  font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:600;
+  color:var(--muted);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase;
+  transition:color 0.2s;position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;
+  background:var(--cyan);transition:width 0.3s;
+}
+.nav-links a:hover{color:var(--cyan);}
+.nav-links a:hover::after{width:100%;}
+.nav-cta{
+  padding:8px 20px;border:1px solid var(--cyan);border-radius:4px;
+  color:var(--cyan)!important;font-family:'Syne',sans-serif;font-size:0.8rem!important;
+  font-weight:700!important;letter-spacing:0.08em;text-decoration:none;
+  transition:all 0.2s!important;background:transparent;
+}
+.nav-cta:hover{background:var(--cyan);color:var(--bg)!important;}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:5px;}
+.hamburger span{width:24px;height:2px;background:var(--cyan);border-radius:2px;transition:all 0.3s;}
+
+/* ── HERO ── */
+#hero{
+  position:relative;z-index:1;
+  min-height:100vh;
+  display:flex;align-items:center;
+  padding:0 5%;
+  overflow:hidden;
+}
+.hero-content{max-width:780px;}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:600;
+  letter-spacing:0.2em;text-transform:uppercase;color:var(--cyan);
+  margin-bottom:1.5rem;
+  opacity:0;animation:fadeUp 0.6s 0.2s forwards;
+}
+.hero-tag::before{content:'';width:32px;height:1px;background:var(--cyan);}
+.hero-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(4rem,10vw,8.5rem);
+  line-height:0.92;
+  letter-spacing:0.02em;
+  color:#fff;
+  opacity:0;animation:fadeUp 0.7s 0.35s forwards;
+}
+.hero-name .accent{
+  background:linear-gradient(135deg,var(--cyan) 0%,var(--magenta) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-tagline{
+  font-family:'Syne',sans-serif;font-size:clamp(1rem,2vw,1.25rem);font-weight:400;
+  color:var(--muted);margin-top:1.5rem;margin-bottom:2.5rem;
+  max-width:560px;line-height:1.7;
+  opacity:0;animation:fadeUp 0.7s 0.5s forwards;
+}
+.typewriter{color:var(--cyan);font-weight:600;}
+.hero-btns{
+  display:flex;gap:1rem;flex-wrap:wrap;
+  opacity:0;animation:fadeUp 0.7s 0.65s forwards;
+}
+.btn-primary{
+  padding:14px 32px;background:var(--cyan);color:var(--bg);
+  font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;
+  letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;
+  border:none;cursor:pointer;border-radius:4px;
+  transition:all 0.25s;
+}
+.btn-primary:hover{background:#fff;transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,212,255,0.3);}
+.btn-outline{
+  padding:14px 32px;background:transparent;color:var(--text);
+  font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;
+  letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;
+  border:1px solid rgba(255,255,255,0.15);cursor:pointer;border-radius:4px;
+  transition:all 0.25s;
+}
+.btn-outline:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-2px);}
+.hero-stats{
+  position:absolute;bottom:60px;right:5%;
+  display:flex;gap:3rem;
+  opacity:0;animation:fadeUp 0.7s 0.8s forwards;
+}
+.stat-item{text-align:center;}
+.stat-num{
+  font-family:'Bebas Neue',sans-serif;font-size:2.5rem;
+  background:linear-gradient(180deg,var(--cyan),var(--cyan2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.stat-label{font-size:0.72rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;}
+.hero-scroll-hint{
+  position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  color:var(--muted);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;
+  animation:bounce 2s infinite;
+}
+.scroll-line{width:1px;height:40px;background:linear-gradient(var(--cyan),transparent);}
+
+/* ── SECTIONS ── */
+section{position:relative;z-index:1;padding:100px 5%;}
+.section-label{
+  font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:700;
+  letter-spacing:0.25em;text-transform:uppercase;color:var(--cyan);
+  display:flex;align-items:center;gap:12px;margin-bottom:1rem;
+}
+.section-label::before{content:'';width:24px;height:1px;background:var(--cyan);}
+.section-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.5rem,5vw,4rem);
+  letter-spacing:0.04em;line-height:1;
+  margin-bottom:0.5rem;
+}
+.section-sub{color:var(--muted);max-width:600px;margin-bottom:3rem;font-size:0.95rem;}
+
+/* ── ABOUT ── */
+#about{background:var(--bg2);}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;}
+.about-img-wrap{position:relative;}
+.about-img-frame{
+  width:100%;aspect-ratio:1;
+  background:linear-gradient(135deg,var(--bg3) 0%,rgba(0,212,255,0.05) 100%);
+  border:1px solid var(--border);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:6rem;position:relative;overflow:hidden;
+}
+.about-img-frame::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(45deg,transparent 40%,rgba(0,212,255,0.05) 100%);
+}
+.avatar-placeholder{font-size:8rem;filter:drop-shadow(0 0 40px rgba(0,212,255,0.3));}
+.corner-decor{
+  position:absolute;width:30px;height:30px;
+  border-color:var(--cyan);border-style:solid;border-width:0;
+}
+.corner-decor.tl{top:-1px;left:-1px;border-top-width:2px;border-left-width:2px;}
+.corner-decor.tr{top:-1px;right:-1px;border-top-width:2px;border-right-width:2px;}
+.corner-decor.bl{bottom:-1px;left:-1px;border-bottom-width:2px;border-left-width:2px;}
+.corner-decor.br{bottom:-1px;right:-1px;border-bottom-width:2px;border-right-width:2px;}
+.floating-badge{
+  position:absolute;
+  background:var(--bg);border:1px solid var(--border);border-radius:8px;
+  padding:10px 14px;backdrop-filter:blur(10px);
+  font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:600;
+  display:flex;align-items:center;gap:8px;
+}
+.floating-badge.b1{bottom:-20px;right:-20px;}
+.floating-badge.b2{top:-20px;left:-20px;}
+.badge-dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite;}
+.about-text p{color:var(--muted);margin-bottom:1.2rem;font-size:0.98rem;line-height:1.8;}
+.about-highlights{
+  display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem;
+}
+.highlight-card{
+  padding:16px;background:var(--card);border:1px solid var(--border);border-radius:8px;
+  backdrop-filter:blur(10px);transition:border-color 0.3s;
+}
+.highlight-card:hover{border-color:var(--cyan);}
+.highlight-icon{font-size:1.5rem;margin-bottom:8px;}
+.highlight-label{font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:700;color:var(--cyan);letter-spacing:0.05em;margin-bottom:4px;}
+.highlight-val{font-size:0.85rem;color:var(--muted);}
+
+/* ── SKILLS ── */
+#skills{background:var(--bg);}
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;}
+.skill-group{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:24px;backdrop-filter:blur(10px);
+  transition:transform 0.3s,border-color 0.3s;
+}
+.skill-group:hover{transform:translateY(-4px);border-color:rgba(0,212,255,0.3);}
+.skill-group-header{
+  display:flex;align-items:center;gap:12px;margin-bottom:1.2rem;
+}
+.skill-group-icon{font-size:1.6rem;}
+.skill-group-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.05em;}
+.tag-list{display:flex;flex-wrap:wrap;gap:8px;}
+.tag{
+  padding:5px 12px;border-radius:20px;font-size:0.74rem;font-weight:500;
+  border:1px solid;transition:all 0.2s;cursor:default;
+}
+.tag-cyan{border-color:rgba(0,212,255,0.3);color:var(--cyan);background:rgba(0,212,255,0.05);}
+.tag-cyan:hover{background:rgba(0,212,255,0.12);}
+.tag-magenta{border-color:rgba(255,45,120,0.3);color:var(--magenta);background:rgba(255,45,120,0.05);}
+.tag-violet{border-color:rgba(124,58,237,0.3);color:#a78bfa;background:rgba(124,58,237,0.05);}
+.tag-gold{border-color:rgba(245,185,66,0.3);color:var(--gold);background:rgba(245,185,66,0.05);}
+
+/* ── PROJECTS ── */
+#projects{background:var(--bg2);}
+.filter-tabs{
+  display:flex;flex-wrap:wrap;gap:0.75rem;margin-bottom:3rem;
+}
+.filter-btn{
+  padding:8px 20px;border-radius:20px;font-family:'Syne',sans-serif;font-size:0.78rem;
+  font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:all 0.2s;
+  border:1px solid var(--border);background:transparent;color:var(--muted);
+}
+.filter-btn.active,.filter-btn:hover{
+  background:var(--cyan);color:var(--bg);border-color:var(--cyan);
+}
+.projects-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem;
+}
+.project-card{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:28px;backdrop-filter:blur(10px);
+  transition:all 0.35s;position:relative;overflow:hidden;
+}
+.project-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--cyan),var(--magenta));
+  transform:scaleX(0);transition:transform 0.35s;transform-origin:left;
+}
+.project-card:hover{transform:translateY(-6px);border-color:rgba(0,212,255,0.3);box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+.project-card:hover::before{transform:scaleX(1);}
+.project-cat{
+  font-family:'Syne',sans-serif;font-size:0.68rem;font-weight:700;
+  letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;
+}
+.cat-medical{color:#34d399;}
+.cat-vision{color:var(--cyan);}
+.cat-satellite{color:var(--gold);}
+.cat-detection{color:var(--magenta);}
+.cat-edge{color:#a78bfa;}
+.cat-autonomous{color:#fb923c;}
+.cat-nlp{color:#f472b6;}
+.project-title{
+  font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;
+  color:#fff;margin-bottom:10px;line-height:1.4;
+}
+.project-desc{font-size:0.85rem;color:var(--muted);line-height:1.7;margin-bottom:1.2rem;}
+.project-metrics{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1.2rem;}
+.metric{
+  padding:4px 10px;border-radius:4px;background:rgba(0,212,255,0.08);
+  font-size:0.72rem;font-weight:600;color:var(--cyan);
+  font-family:'Syne',sans-serif;
+}
+.project-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.ptag{
+  padding:3px 9px;border-radius:3px;font-size:0.68rem;
+  background:rgba(255,255,255,0.04);color:var(--muted);border:1px solid rgba(255,255,255,0.07);
+}
+.project-card .proj-link{
+  position:absolute;top:24px;right:24px;
+  width:32px;height:32px;border-radius:50%;
+  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+  color:var(--muted);text-decoration:none;font-size:0.9rem;
+  transition:all 0.25s;
+}
+.project-card:hover .proj-link{border-color:var(--cyan);color:var(--cyan);transform:rotate(45deg);}
+
+/* ── EXPERIENCE TIMELINE ── */
+#experience{background:var(--bg);}
+.timeline{position:relative;padding-left:40px;}
+.timeline::before{
+  content:'';position:absolute;left:8px;top:0;bottom:0;
+  width:1px;background:linear-gradient(var(--cyan),transparent);
+}
+.timeline-item{
+  position:relative;margin-bottom:3rem;
+  opacity:0;transform:translateX(-20px);transition:all 0.5s;
+}
+.timeline-item.visible{opacity:1;transform:translateX(0);}
+.timeline-dot{
+  position:absolute;left:-36px;top:6px;
+  width:14px;height:14px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--cyan);
+}
+.timeline-dot::after{
+  content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:6px;height:6px;border-radius:50%;background:var(--cyan);
+}
+.timeline-year{
+  font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:700;
+  color:var(--cyan);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px;
+}
+.timeline-role{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:4px;}
+.timeline-org{font-size:0.88rem;color:var(--muted);margin-bottom:10px;}
+.timeline-desc{font-size:0.88rem;color:var(--muted);line-height:1.7;}
+.timeline-techs{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+
+/* ── RESEARCH / PUBLICATIONS ── */
+#research{background:var(--bg2);}
+.research-grid{display:grid;gap:1.5rem;}
+.research-card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:24px 28px;backdrop-filter:blur(10px);
+  display:grid;grid-template-columns:auto 1fr auto;gap:1.5rem;align-items:center;
+  transition:all 0.3s;
+}
+.research-card:hover{border-color:rgba(0,212,255,0.25);transform:translateX(6px);}
+.research-num{
+  font-family:'Bebas Neue',sans-serif;font-size:2.5rem;
+  color:rgba(0,212,255,0.15);line-height:1;
+}
+.research-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:#fff;margin-bottom:6px;}
+.research-meta{font-size:0.82rem;color:var(--muted);}
+.research-badge{
+  padding:6px 14px;border-radius:20px;font-size:0.72rem;font-weight:700;
+  font-family:'Syne',sans-serif;letter-spacing:0.05em;white-space:nowrap;
+}
+.badge-pub{background:rgba(52,211,153,0.1);color:#34d399;border:1px solid rgba(52,211,153,0.2);}
+.badge-wip{background:rgba(245,185,66,0.1);color:var(--gold);border:1px solid rgba(245,185,66,0.2);}
+
+/* ── GITHUB STATS ── */
+#github{background:var(--bg);}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-bottom:3rem;}
+.stats-card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:28px 24px;text-align:center;backdrop-filter:blur(10px);
+  transition:all 0.3s;
+}
+.stats-card:hover{border-color:var(--cyan);transform:translateY(-4px);}
+.stats-icon{font-size:2rem;margin-bottom:12px;}
+.stats-value{
+  font-family:'Bebas Neue',sans-serif;font-size:2.8rem;
+  background:linear-gradient(135deg,var(--cyan),var(--magenta));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.stats-lbl{font-size:0.8rem;color:var(--muted);margin-top:4px;letter-spacing:0.06em;}
+.github-img-row{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;
+  align-items:start;
+}
+.github-img-card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:20px;overflow:hidden;backdrop-filter:blur(10px);
+}
+.github-img-card img{width:100%;border-radius:6px;}
+.github-img-card h4{font-family:'Syne',sans-serif;font-size:0.8rem;color:var(--muted);margin-bottom:12px;letter-spacing:0.08em;text-transform:uppercase;}
+
+/* ── CONTACT ── */
+#contact{background:var(--bg2);}
+.contact-wrapper{
+  display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;
+}
+.contact-headline{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.5rem,5vw,4.5rem);
+  line-height:0.95;margin-bottom:1.5rem;
+}
+.contact-headline .line2{
+  background:linear-gradient(90deg,var(--cyan),var(--magenta));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.contact-blurb{color:var(--muted);font-size:0.95rem;line-height:1.8;margin-bottom:2rem;}
+.social-links{display:flex;flex-direction:column;gap:1rem;}
+.social-link{
+  display:flex;align-items:center;gap:1rem;padding:16px 20px;
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  text-decoration:none;transition:all 0.3s;
+  backdrop-filter:blur(10px);
+}
+.social-link:hover{border-color:var(--cyan);transform:translateX(8px);}
+.social-link-icon{
+  width:42px;height:42px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;
+  flex-shrink:0;
+}
+.icon-github{background:rgba(255,255,255,0.05);}
+.icon-linkedin{background:rgba(0,119,181,0.15);}
+.icon-kaggle{background:rgba(32,180,232,0.12);}
+.icon-twitter{background:rgba(0,0,0,0.3);}
+.icon-email{background:rgba(234,67,53,0.12);}
+.social-link-info{flex:1;}
+.social-link-name{font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;color:#fff;}
+.social-link-handle{font-size:0.78rem;color:var(--muted);}
+.social-link-arrow{color:var(--muted);font-size:1rem;transition:all 0.3s;}
+.social-link:hover .social-link-arrow{color:var(--cyan);transform:translateX(4px);}
+
+/* ── FOOTER ── */
+footer{
+  position:relative;z-index:1;
+  background:var(--bg);
+  padding:40px 5%;
+  display:flex;align-items:center;justify-content:space-between;
+  border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem;
+}
+.footer-logo{
+  font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.1em;
+  background:linear-gradient(90deg,var(--cyan),var(--magenta));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.footer-copy{font-size:0.78rem;color:var(--muted);}
+.footer-links{display:flex;gap:1.5rem;}
+.footer-links a{font-size:0.78rem;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--cyan);}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,212,255,0.4);}50%{box-shadow:0 0 0 8px rgba(0,212,255,0);}}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(8px);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.6s,transform 0.6s;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ── GLITCH LINE ── */
+.glitch-divider{
+  width:100%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),var(--magenta),transparent);
+  margin:0;position:relative;z-index:1;
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .about-grid,.contact-wrapper{grid-template-columns:1fr;gap:2.5rem;}
+  .about-img-wrap{display:none;}
+  .hero-stats{position:static;margin-top:3rem;justify-content:flex-start;}
+  .research-card{grid-template-columns:1fr;gap:0.5rem;}
+  .research-num{font-size:1.5rem;display:none;}
+  .research-badge{justify-self:start;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .mobile-menu{
+    display:none;position:fixed;top:64px;left:0;right:0;
+    background:rgba(4,8,15,0.97);backdrop-filter:blur(20px);
+    padding:2rem 5%;z-index:99;flex-direction:column;gap:1.5rem;
+    border-bottom:1px solid var(--border);
+  }
+  .mobile-menu.open{display:flex;}
+  .mobile-menu a{font-family:'Syne',sans-serif;font-size:1rem;font-weight:600;color:var(--text);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="neuralCanvas"></canvas>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-logo">AISoltani</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#github">Stats</a></li>
+    <li><a href="#contact" class="nav-cta">Contact</a></li>
+  </ul>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" onclick="toggleMenu()">About</a>
+  <a href="#skills" onclick="toggleMenu()">Skills</a>
+  <a href="#projects" onclick="toggleMenu()">Projects</a>
+  <a href="#research" onclick="toggleMenu()">Research</a>
+  <a href="#github" onclick="toggleMenu()">Stats</a>
+  <a href="#contact" onclick="toggleMenu()">Contact</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-content">
+    <div class="hero-tag">AI Engineer &amp; Computer Vision Researcher</div>
+    <h1 class="hero-name">
+      Amir<br/><span class="accent">Soltani</span>
+    </h1>
+    <p class="hero-tagline">
+      Building the future of <span class="typewriter" id="typewriter"></span><br/>
+      Deep Learning · Medical AI · Real-Time Vision Systems · Edge Deployment
+    </p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn-primary">View Projects</a>
+      <a href="#contact" class="btn-outline">Get In Touch</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">1.8K</div>
+      <div class="stat-label">GitHub Followers</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">84</div>
+      <div class="stat-label">Repositories</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">5+</div>
+      <div class="stat-label">Years Experience</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">20+</div>
+      <div class="stat-label">AI Projects</div>
+    </div>
+  </div>
+  <div class="hero-scroll-hint">
+    <div class="scroll-line"></div>
+    scroll
+  </div>
+</section>
+
+<div class="glitch-divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-img-wrap">
+      <div class="about-img-frame">
+        <img src="https://avatars.githubusercontent.com/u/56760080?v=4" alt="Amir Soltani" style="width:100%;height:100%;object-fit:cover;border-radius:7px;"/>
+        <div class="corner-decor tl"></div>
+        <div class="corner-decor tr"></div>
+        <div class="corner-decor bl"></div>
+        <div class="corner-decor br"></div>
+      </div>
+      <div class="floating-badge b1">
+        <div class="badge-dot"></div>
+        <span>Available for Projects</span>
+      </div>
+      <div class="floating-badge b2">
+        🏆 <span>LPIC Certified · Linux</span>
+      </div>
+    </div>
+    <div class="about-text reveal">
+      <div class="section-label">About Me</div>
+      <h2 class="section-title">Passion Meets<br/>Precision</h2>
+      <p>I'm Amir Soltani — an AI engineer with deep roots in computer vision, medical imaging, and real-time deep learning systems. With over 1.8K GitHub followers and 84+ repositories, I've built production-grade AI across healthcare, automotive, satellite imagery, and edge devices.</p>
+      <p>I specialize in pushing state-of-the-art beyond benchmarks: whether that's achieving 42mm MPJPE on Human3.6M with Transformer architectures, deploying tumor segmentation to hospitals with 0.92 DSC score, or running YOLO-class detection in under 30ms on embedded hardware.</p>
+      <p>My philosophy: <em style="color:var(--cyan)">Knowledge is not skill. Knowledge plus ten thousand hours is skill.</em></p>
+      <div class="about-highlights">
+        <div class="highlight-card">
+          <div class="highlight-icon">🏥</div>
+          <div class="highlight-label">Medical AI</div>
+          <div class="highlight-val">Deployed to 5 hospitals</div>
+        </div>
+        <div class="highlight-card">
+          <div class="highlight-icon">⚡</div>
+          <div class="highlight-label">Real-Time Vision</div>
+          <div class="highlight-val">&lt;30ms TensorRT latency</div>
+        </div>
+        <div class="highlight-card">
+          <div class="highlight-icon">🛰️</div>
+          <div class="highlight-label">Remote Sensing</div>
+          <div class="highlight-val">Sentinel &amp; Maxar datasets</div>
+        </div>
+        <div class="highlight-card">
+          <div class="highlight-icon">🎓</div>
+          <div class="highlight-label">Edge AI</div>
+          <div class="highlight-val">Raspberry Pi · Android · TFLite</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="glitch-divider"></div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label reveal">Technical Arsenal</div>
+  <h2 class="section-title reveal">Skills &amp;<br/>Expertise</h2>
+  <p class="section-sub reveal">A comprehensive stack from research to production deployment across cloud, edge, and embedded platforms.</p>
+  <div class="skills-grid reveal">
+    <div class="skill-group">
+      <div class="skill-group-header">
+        <span class="skill-group-icon">🧠</span>
+        <span class="skill-group-title">Programming Languages</span>
+      </div>
+      <div class="tag-list">
+        <span class="tag tag-cyan">Python</span>
+        <span class="tag tag-cyan">C++</span>
+        <span class="tag tag-cyan">MATLAB</span>
+        <span class="tag tag-cyan">Kotlin</span>
+        <span class="tag tag-cyan">Bash/Shell</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-header">
+        <span class="skill-group-icon">🔥</span>
+        <span class="skill-group-title">Deep Learning Frameworks</span>
+      </div>
+      <div class="tag-list">
+        <span class="tag tag-magenta">PyTorch</span>
+        <span class="tag tag-magenta">TensorFlow</span>
+        <span class="tag tag-magenta">Keras</span>
+        <span class="tag tag-magenta">HuggingFace</span>
+        <span class="tag tag-magenta">MMDetection</span>
+        <span class="tag tag-magenta">MONAI</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-header">
+        <span class="skill-group-icon">👁️</span>
+        <span class="skill-group-title">Computer Vision</span>
+      </div>
+      <div class="tag-list">
+        <span class="tag tag-cyan">OpenCV</span>
+        <span class="tag tag-cyan">YOLO Variants</span>
+        <span class="tag tag-cyan">MediaPipe</span>
+        <span class="tag tag-cyan">Albumentations</span>
+        <span class="tag tag-cyan">Scikit-Image</span>
+        <span class="tag tag-cyan">TorchGeo</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-header">
+        <span class="skill-group-icon">⚡</span>
+        <span class="skill-group-title">Edge &amp; Deployment</span>
+      </div>
+      <div class="tag-list">
+        <span class="tag tag-gold">TensorRT</span>
+        <span class="tag tag-gold">TF Lite</span>
+        <span class="tag tag-gold">DeepStream</span>
+        <span class="tag tag-gold">ONNX</span>
+        <span class="tag tag-gold">Raspberry Pi</span>
+        <span class="tag tag-gold">Android/Kotlin</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-header">
+        <span class="skill-group-icon">🛠️</span>
+        <span class="skill-group-title">MLOps &amp; Tools</span>
+      </div>
+      <div class="tag-list">
+        <span class="tag tag-violet">Docker</span>
+        <span class="tag tag-violet">Git/GitHub/GitLab</span>
+        <span class="tag tag-violet">Azure</span>
+        <span class="tag tag-violet">AWS</span>
+        <span class="tag tag-violet">Comet ML</span>
+        <span class="tag tag-violet">Neptune</span>
+        <span class="tag tag-violet">Roboflow</span>
+        <span class="tag tag-violet">LabelBox</span>
+        <span class="tag tag-violet">CVAT</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-header">
+        <span class="skill-group-icon">🌍</span>
+        <span class="skill-group-title">Geo &amp; Autonomous</span>
+      </div>
+      <div class="tag-list">
+        <span class="tag tag-gold">GDAL</span>
+        <span class="tag tag-gold">Rasterio</span>
+        <span class="tag tag-gold">GeoPandas</span>
+        <span class="tag tag-gold">CARLA Simulator</span>
+        <span class="tag tag-gold">Openpilot</span>
+        <span class="tag tag-gold">SAM2</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-header">
+        <span class="skill-group-icon">🤖</span>
+        <span class="skill-group-title">AI/LLM &amp; Automation</span>
+      </div>
+      <div class="tag-list">
+        <span class="tag tag-magenta">LangChain</span>
+        <span class="tag tag-magenta">N8N</span>
+        <span class="tag tag-magenta">RAG Pipelines</span>
+        <span class="tag tag-magenta">Windsurf</span>
+        <span class="tag tag-magenta">Cursor</span>
+        <span class="tag tag-magenta">Claude</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-header">
+        <span class="skill-group-icon">🎯</span>
+        <span class="skill-group-title">Specializations</span>
+      </div>
+      <div class="tag-list">
+        <span class="tag tag-cyan">Object Detection</span>
+        <span class="tag tag-cyan">Instance Segmentation</span>
+        <span class="tag tag-cyan">Pose Estimation</span>
+        <span class="tag tag-cyan">Few-Shot Learning</span>
+        <span class="tag tag-cyan">Medical Imaging</span>
+        <span class="tag tag-cyan">Remote Sensing</span>
+        <span class="tag tag-cyan">VLMs</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="glitch-divider"></div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-label reveal">Portfolio</div>
+  <h2 class="section-title reveal">Featured<br/>Projects</h2>
+  <p class="section-sub reveal">Production-grade AI systems spanning medical imaging, autonomous vehicles, satellite analysis, and real-time edge deployment.</p>
+
+  <div class="filter-tabs reveal">
+    <button class="filter-btn active" onclick="filterProjects('all',this)">All Projects</button>
+    <button class="filter-btn" onclick="filterProjects('medical',this)">Medical AI</button>
+    <button class="filter-btn" onclick="filterProjects('vision',this)">Computer Vision</button>
+    <button class="filter-btn" onclick="filterProjects('satellite',this)">Satellite</button>
+    <button class="filter-btn" onclick="filterProjects('detection',this)">Detection</button>
+    <button class="filter-btn" onclick="filterProjects('edge',this)">Edge AI</button>
+  </div>
+
+  <div class="projects-grid" id="projectsGrid">
+
+    <!-- MEDICAL -->
+    <div class="project-card" data-cat="medical">
+      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-medical">● Medical AI</div>
+      <div class="project-title">Automated Medical Image Segmentation</div>
+      <div class="project-desc">U-Net system for brain tumor segmentation on BraTS 2021. Active learning pipeline reducing annotation time by 35%. Deployed across 5 hospitals via MONAI framework.</div>
+      <div class="project-metrics">
+        <span class="metric">0.92 DSC Score</span>
+        <span class="metric">−30% Workload</span>
+        <span class="metric">5 Hospitals</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">U-Net</span><span class="ptag">MONAI</span><span class="ptag">Active Learning</span><span class="ptag">BraTS 2021</span>
+      </div>
+    </div>
+
+    <div class="project-card" data-cat="medical">
+      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-medical">● Medical AI</div>
+      <div class="project-title">Tooth Detection, Segmentation &amp; Numbering</div>
+      <div class="project-desc">Intelligent Dental Imaging System for Endodontic Surgery Prediction. Cascade R-CNN on OPG X-rays with contour analysis for overlapping tooth disambiguation.</div>
+      <div class="project-metrics">
+        <span class="metric">96% Accuracy</span>
+        <span class="metric">−15 min/patient</span>
+        <span class="metric">+27% Numbering</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">Cascade R-CNN</span><span class="ptag">Dental AI</span><span class="ptag">OPG X-rays</span><span class="ptag">CAD Integration</span>
+      </div>
+    </div>
+
+    <div class="project-card" data-cat="medical">
+      <a href="https://github.com/AISoltani/Mask_RCNN_ResNet_101_50" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-medical">● Medical AI</div>
+      <div class="project-title">Medical Image Enhancement &amp; Super-Resolution</div>
+      <div class="project-desc">MRI denoising with SNR improvement from 12 dB to 18 dB on the IXI dataset. CT contrast enhancement via CLAHE for liver lesion detection. Integrated into PACS.</div>
+      <div class="project-metrics">
+        <span class="metric">12→18 dB SNR</span>
+        <span class="metric">−22% Prep Time</span>
+        <span class="metric">PACS Ready</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">Few-Shot</span><span class="ptag">CLAHE</span><span class="ptag">3D Segmentation</span><span class="ptag">IXI Dataset</span>
+      </div>
+    </div>
+
+    <div class="project-card" data-cat="medical">
+      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-medical">● Medical AI</div>
+      <div class="project-title">Retinal Vessel Segmentation &amp; Lesion Grading</div>
+      <div class="project-desc">Transformer-UNet hybrid for automated diabetic retinopathy grading on DRIVE &amp; STARE datasets. Multi-scale feature fusion for accurate vessel tree extraction and microaneurysm detection.</div>
+      <div class="project-metrics">
+        <span class="metric">0.94 AUC</span>
+        <span class="metric">97.2% Sensitivity</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">ViT-UNet</span><span class="ptag">DRIVE Dataset</span><span class="ptag">Retina AI</span>
+      </div>
+    </div>
+
+    <!-- VISION / POSE -->
+    <div class="project-card" data-cat="vision">
+      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-vision">● Computer Vision</div>
+      <div class="project-title">3D Human Body Pose Estimation</div>
+      <div class="project-desc">Transformer-based pose prediction with robust occlusion handling. Real-time deployment via TensorRT with under 30ms latency on Human3.6M benchmark.</div>
+      <div class="project-metrics">
+        <span class="metric">42mm MPJPE</span>
+        <span class="metric">&lt;30ms Latency</span>
+        <span class="metric">−4% vs Baseline</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">Transformer</span><span class="ptag">TensorRT</span><span class="ptag">Human3.6M</span><span class="ptag">Real-Time</span>
+      </div>
+    </div>
+
+    <div class="project-card" data-cat="vision">
+      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-vision">● Computer Vision</div>
+      <div class="project-title">ViUNet: Vision Transformer UNet for Segmentation</div>
+      <div class="project-desc">Novel architecture merging U-Net's localization strengths with ViT's global context modeling. Multi-scale attention mechanisms for robust feature representation across diverse imaging modalities.</div>
+      <div class="project-metrics">
+        <span class="metric">Multi-Scale Attn</span>
+        <span class="metric">Global Context</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">ViT</span><span class="ptag">U-Net</span><span class="ptag">Attention</span><span class="ptag">Custom Architecture</span>
+      </div>
+    </div>
+
+    <div class="project-card" data-cat="vision">
+      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-vision">● Computer Vision</div>
+      <div class="project-title">Multi-Modal Detection: Pose, Face &amp; Hand</div>
+      <div class="project-desc">MediaPipe/OpenCV unified system for simultaneous pose, facial landmark, and hand gesture tracking. Low-light face detection optimized via histogram equalization. Deployed in AR applications.</div>
+      <div class="project-metrics">
+        <span class="metric">Real-Time</span>
+        <span class="metric">3-in-1 Pipeline</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">MediaPipe</span><span class="ptag">OpenCV</span><span class="ptag">AR</span><span class="ptag">Landmark Detection</span>
+      </div>
+    </div>
+
+    <div class="project-card" data-cat="vision">
+      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-vision">● Computer Vision</div>
+      <div class="project-title">Gym Workout Recognition via ST-GCN</div>
+      <div class="project-desc">Spatiotemporal Graph Convolutional Network for real-time gym exercise classification. ONNX deployment enabling efficient inference on fitness applications with 88% accuracy on UCF101.</div>
+      <div class="project-metrics">
+        <span class="metric">88% Accuracy</span>
+        <span class="metric">UCF101</span>
+        <span class="metric">ONNX Deployed</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">ST-GCN</span><span class="ptag">ONNX</span><span class="ptag">Action Recognition</span>
+      </div>
+    </div>
+
+    <div class="project-card" data-cat="vision">
+      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-vision">● Computer Vision</div>
+      <div class="project-title">Image Restoration: Real-ESRGAN &amp; GFPGAN</div>
+      <div class="project-desc">Historical image restoration pipeline using Real-ESRGAN. Fine-tuned GFPGAN for high-fidelity facial reconstruction. HAT super-resolution model deployed in a production mobile application.</div>
+      <div class="project-metrics">
+        <span class="metric">4× Super-Res</span>
+        <span class="metric">Mobile App</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">Real-ESRGAN</span><span class="ptag">GFPGAN</span><span class="ptag">HAT</span><span class="ptag">Mobile Deploy</span>
+      </div>
+    </div>
+
+    <div class="project-card" data-cat="vision">
+      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-vision">● Computer Vision</div>
+      <div class="project-title">Few-Shot Fashion Recommendation System</div>
+      <div class="project-desc">Hybrid few-shot learning approach for visual fashion item retrieval and recommendation. Siamese networks combined with transformer embeddings for outfit compatibility scoring.</div>
+      <div class="project-metrics">
+        <span class="metric">Few-Shot</span>
+        <span class="metric">Siamese Network</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">Few-Shot</span><span class="ptag">Siamese Net</span><span class="ptag">Transformers</span>
+      </div>
+    </div>
+
+    <!-- DETECTION -->
+    <div class="project-card" data-cat="detection">
+      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-detection">● Detection</div>
+      <div class="project-title">Thermal Object Detection: YOLO–Transformer Hybrid</div>
+      <div class="project-desc">Real-time colormap-invariant thermal detection framework. Hybrid YOLO–Transformer architecture achieving robust detection across varied thermal colormap configurations in industrial environments.</div>
+      <div class="project-metrics">
+        <span class="metric">Colormap-Invariant</span>
+        <span class="metric">Real-Time</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">Thermal Imaging</span><span class="ptag">YOLO</span><span class="ptag">Transformer</span><span class="ptag">Industrial AI</span>
+      </div>
+    </div>
+
+    <div class="project-card" data-cat="detection">
+      <a href="https://github.com/AISoltani/Yolov7_LPR" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-detection">● Detection</div>
+      <div class="project-title">License Plate Recognition with YOLOv7</div>
+      <div class="project-desc">End-to-end plate detection and OCR recognition pipeline using YOLOv7. Optimized for varying lighting, angles, and international plate formats with high-speed inference.</div>
+      <div class="project-metrics">
+        <span class="metric">YOLOv7</span>
+        <span class="metric">Multi-Format</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">YOLOv7</span><span class="ptag">OCR</span><span class="ptag">LPR</span><span class="ptag">Real-Time</span>
+      </div>
+    </div>
+
+    <div class="project-card" data-cat="detection">
+      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-detection">● Detection</div>
+      <div class="project-title">Multi-Object Tracking with DeepSORT &amp; ByteTrack</div>
+      <div class="project-desc">Robust multi-object tracking pipeline combining YOLOv8 detection with DeepSORT and ByteTrack. Real-time speed estimation and trajectory analysis for surveillance and traffic monitoring.</div>
+      <div class="project-metrics">
+        <span class="metric">MOTA 78.4%</span>
+        <span class="metric">30+ FPS</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">DeepSORT</span><span class="ptag">ByteTrack</span><span class="ptag">YOLOv8</span><span class="ptag">Tracking</span>
+      </div>
+    </div>
+
+    <div class="project-card" data-cat="detection">
+      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-detection">● Detection</div>
+      <div class="project-title">Industrial Defect Detection System</div>
+      <div class="project-desc">Automated quality control pipeline for manufacturing defect detection. Anomaly detection via PatchCore and supervised YOLOv8 for surface scratch, dent, and contamination classification.</div>
+      <div class="project-metrics">
+        <span class="metric">99.1% Precision</span>
+        <span class="metric">Zero False-Pass</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">PatchCore</span><span class="ptag">Anomaly Detection</span><span class="ptag">Manufacturing</span>
+      </div>
+    </div>
+
+    <!-- SATELLITE -->
+    <div class="project-card" data-cat="satellite">
+      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-satellite">● Satellite / Remote Sensing</div>
+      <div class="project-title">Scalable High-Res Object Detection via Sentinel</div>
+      <div class="project-desc">Rare-object detection and matching framework for large Sentinel satellite tiles. Sliding-window + attention-guided detection with geospatial coordinate output and GeoJSON export.</div>
+      <div class="project-metrics">
+        <span class="metric">Large Tile</span>
+        <span class="metric">GeoJSON Output</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">Sentinel</span><span class="ptag">GDAL</span><span class="ptag">Rasterio</span><span class="ptag">TorchGeo</span>
+      </div>
+    </div>
+
+    <div class="project-card" data-cat="satellite">
+      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-satellite">● Satellite / Remote Sensing</div>
+      <div class="project-title">Road Segmentation via Maxar Open Data &amp; SAM2</div>
+      <div class="project-desc">Zero-shot and few-shot road network extraction from high-resolution Maxar imagery using Segment Anything Model 2. Automated pipeline for urban planning and infrastructure mapping.</div>
+      <div class="project-metrics">
+        <span class="metric">SAM2</span>
+        <span class="metric">Zero-Shot</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">SAM2</span><span class="ptag">Maxar</span><span class="ptag">GeoPandas</span><span class="ptag">Road Network</span>
+      </div>
+    </div>
+
+    <div class="project-card" data-cat="satellite">
+      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-satellite">● Satellite / Remote Sensing</div>
+      <div class="project-title">Fire &amp; Smoke Detection — Industrial &amp; Wildfire</div>
+      <div class="project-desc">Dual-domain detection system for fire and smoke in both industrial environments and wildfire satellite imagery. Temporal analysis for early-warning systems with drone integration capability.</div>
+      <div class="project-metrics">
+        <span class="metric">Early Warning</span>
+        <span class="metric">Multi-Domain</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">Fire Detection</span><span class="ptag">Temporal CV</span><span class="ptag">Drone Integration</span>
+      </div>
+    </div>
+
+    <div class="project-card" data-cat="satellite">
+      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-satellite">● Satellite / Remote Sensing</div>
+      <div class="project-title">Change Detection in Multitemporal Satellite Imagery</div>
+      <div class="project-desc">Siamese network architecture for detecting land-use and structural changes between multitemporal satellite image pairs. Deployed for flood damage assessment and urban expansion monitoring.</div>
+      <div class="project-metrics">
+        <span class="metric">Siamese Net</span>
+        <span class="metric">Flood Assessment</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">Change Detection</span><span class="ptag">Siamese</span><span class="ptag">Multitemporal</span>
+      </div>
+    </div>
+
+    <!-- EDGE AI -->
+    <div class="project-card" data-cat="edge">
+      <a href="https://github.com/AISoltani/Yolov11-Android-Tool-Kotlin" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-edge">● Edge AI</div>
+      <div class="project-title">YOLOv11-EdgeSuite: Universal Mobile Vision Toolkit</div>
+      <div class="project-desc">Android mobile vision toolkit built in Kotlin using YOLOv11 for detection and segmentation on smartphones. Real-time inference via TensorFlow Lite with camera API integration.</div>
+      <div class="project-metrics">
+        <span class="metric">Android</span>
+        <span class="metric">Real-Time</span>
+        <span class="metric">TF Lite</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">YOLOv11</span><span class="ptag">Kotlin</span><span class="ptag">TF Lite</span><span class="ptag">Android</span>
+      </div>
+    </div>
+
+    <div class="project-card" data-cat="edge">
+      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-edge">● Edge AI</div>
+      <div class="project-title">Edge/Corner Detection on Raspberry Pi 4</div>
+      <div class="project-desc">GPU-accelerated Harris Corner and Sobel edge detection for real-time video processing on Raspberry Pi 4. Adaptive thresholding for robust low-light performance.</div>
+      <div class="project-metrics">
+        <span class="metric">GPU Accelerated</span>
+        <span class="metric">Real-Time Video</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">Harris Corner</span><span class="ptag">Sobel</span><span class="ptag">Raspberry Pi 4</span><span class="ptag">OpenCV</span>
+      </div>
+    </div>
+
+    <div class="project-card" data-cat="edge">
+      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-edge">● Edge AI</div>
+      <div class="project-title">Autonomous Driving Perception — CARLA + Openpilot</div>
+      <div class="project-desc">Full AV perception stack integrating object detection, lane segmentation, and depth estimation within the CARLA simulator. Openpilot-compatible policy evaluation for urban and highway scenarios.</div>
+      <div class="project-metrics">
+        <span class="metric">CARLA Sim</span>
+        <span class="metric">Full Stack</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">CARLA</span><span class="ptag">Openpilot</span><span class="ptag">Depth Est.</span><span class="ptag">Lane Seg</span>
+      </div>
+    </div>
+
+    <div class="project-card" data-cat="edge">
+      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
+      <div class="project-cat cat-edge">● Edge AI</div>
+      <div class="project-title">Sign Language Recognition — Real-Time ASL</div>
+      <div class="project-desc">MediaPipe Holistic + LSTM temporal classifier for real-time American Sign Language recognition. Deployed on embedded hardware with under 20ms latency and 94% word-level accuracy.</div>
+      <div class="project-metrics">
+        <span class="metric">94% Word Acc.</span>
+        <span class="metric">&lt;20ms Latency</span>
+      </div>
+      <div class="project-tags">
+        <span class="ptag">MediaPipe</span><span class="ptag">LSTM</span><span class="ptag">ASL</span><span class="ptag">Edge Deploy</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="glitch-divider"></div>
+
+<!-- RESEARCH / PUBLICATIONS -->
+<section id="research">
+  <div class="section-label reveal">Publications &amp; Research</div>
+  <h2 class="section-title reveal">Research<br/>Contributions</h2>
+  <p class="section-sub reveal">Contributing to state-of-the-art in computer vision, medical AI, and deep learning architectures.</p>
+  <div class="research-grid reveal">
+    <div class="research-card">
+      <div class="research-num">01</div>
+      <div>
+        <div class="research-title">ViUNet: Vision Transformer-Based UNet for Image Segmentation</div>
+        <div class="research-meta">Novel architecture · Multi-scale Attention · Cross-domain Generalization</div>
+      </div>
+      <span class="research-badge badge-pub">Research</span>
+    </div>
+    <div class="research-card">
+      <div class="research-num">02</div>
+      <div>
+        <div class="research-title">Few-Shot Cascade R-CNN for Medical Object Detection &amp; Segmentation</div>
+        <div class="research-meta">Medical Imaging · Few-Shot Learning · Cascade Architecture</div>
+      </div>
+      <span class="research-badge badge-pub">Applied</span>
+    </div>
+    <div class="research-card">
+      <div class="research-num">03</div>
+      <div>
+        <div class="research-title">Real-Time Colormap-Invariant Thermal Detection via Hybrid YOLO–Transformer</div>
+        <div class="research-meta">Industrial AI · Thermal Imaging · Domain Adaptation</div>
+      </div>
+      <span class="research-badge badge-pub">Research</span>
+    </div>
+    <div class="research-card">
+      <div class="research-num">04</div>
+      <div>
+        <div class="research-title">Rare Object Detection &amp; Matching in Large Satellite Tiles</div>
+        <div class="research-meta">Remote Sensing · Geospatial AI · Sentinel Imagery</div>
+      </div>
+      <span class="research-badge badge-wip">In Progress</span>
+    </div>
+    <div class="research-card">
+      <div class="research-num">05</div>
+      <div>
+        <div class="research-title">2D–3D Super-Resolution–Driven Detection of Medical Imaging Targets</div>
+        <div class="research-meta">Super-Resolution · 3D Medical Reconstruction · Diagnostic AI</div>
+      </div>
+      <span class="research-badge badge-pub">Applied</span>
+    </div>
+    <div class="research-card">
+      <div class="research-num">06</div>
+      <div>
+        <div class="research-title">Adaptive Few-Shot Density HeatMap Generation for Crowd Analysis</div>
+        <div class="research-meta">Crowd Counting · Density Estimation · Few-Shot Adaptation</div>
+      </div>
+      <span class="research-badge badge-wip">In Progress</span>
+    </div>
+  </div>
+</section>
+
+<div class="glitch-divider"></div>
+
+<!-- GITHUB STATS -->
+<section id="github">
+  <div class="section-label reveal">GitHub Activity</div>
+  <h2 class="section-title reveal">By The<br/>Numbers</h2>
+  <div class="stats-grid reveal">
+    <div class="stats-card">
+      <div class="stats-icon">⭐</div>
+      <div class="stats-value">76</div>
+      <div class="stats-lbl">Stars Earned</div>
+    </div>
+    <div class="stats-card">
+      <div class="stats-icon">👥</div>
+      <div class="stats-value">1.8K</div>
+      <div class="stats-lbl">Followers</div>
+    </div>
+    <div class="stats-card">
+      <div class="stats-icon">📦</div>
+      <div class="stats-value">84</div>
+      <div class="stats-lbl">Repositories</div>
+    </div>
+    <div class="stats-card">
+      <div class="stats-icon">🏆</div>
+      <div class="stats-value">6</div>
+      <div class="stats-lbl">Achievements</div>
+    </div>
+    <div class="stats-card">
+      <div class="stats-icon">🔀</div>
+      <div class="stats-value">20+</div>
+      <div class="stats-lbl">Forks</div>
+    </div>
+  </div>
+
+  <div class="github-img-row reveal">
+    <div class="github-img-card">
+      <h4>GitHub Stats</h4>
+      <img src="https://awesome-github-stats.azurewebsites.net/user-stats/AISoltani?cardType=level&theme=tokyonight&preferLogin=false" alt="GitHub Stats" loading="lazy"/>
+    </div>
+    <div class="github-img-card">
+      <h4>Trophies</h4>
+      <img src="https://github-trophies.vercel.app/?username=AISoltani&theme=tokyonight&row=1&column=6" alt="Trophies" loading="lazy"/>
+    </div>
+    <div class="github-img-card">
+      <h4>Top Languages</h4>
+      <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=AISoltani&layout=compact&theme=tokyonight" alt="Top Languages" loading="lazy"/>
+    </div>
+  </div>
+</section>
+
+<div class="glitch-divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-wrapper">
+    <div class="reveal">
+      <div class="section-label">Contact</div>
+      <h2 class="contact-headline">
+        Let's Build<br/>
+        <span class="line2">Something<br/>Extraordinary</span>
+      </h2>
+      <p class="contact-blurb">Open to collaborations, research partnerships, consulting engagements, and challenging AI projects. Whether it's medical imaging, real-time vision, or autonomous systems — let's connect.</p>
+      <a href="mailto:amirsoltani.os@gmail.com" class="btn-primary" style="display:inline-block;">Send Email →</a>
+    </div>
+    <div class="social-links reveal">
+      <a href="https://github.com/AISoltani" target="_blank" class="social-link">
+        <div class="social-link-icon icon-github">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </div>
+        <div class="social-link-info">
+          <div class="social-link-name">GitHub</div>
+          <div class="social-link-handle">@AISoltani · 1.8K followers</div>
+        </div>
+        <span class="social-link-arrow">→</span>
+      </a>
+      <a href="https://www.linkedin.com/in/amir-soltani-aisoltani/" target="_blank" class="social-link">
+        <div class="social-link-icon icon-linkedin">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#0077b5"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </div>
+        <div class="social-link-info">
+          <div class="social-link-name">LinkedIn</div>
+          <div class="social-link-handle">amir-soltani-aisoltani</div>
+        </div>
+        <span class="social-link-arrow">→</span>
+      </a>
+      <a href="https://www.kaggle.com/aisoltani" target="_blank" class="social-link">
+        <div class="social-link-icon icon-kaggle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#20beff"><path d="M18.825 23.859c-.022.092-.117.141-.281.141h-3.139c-.187 0-.351-.082-.492-.248l-5.178-6.589-1.448 1.374v5.111c0 .235-.117.352-.351.352H5.505c-.236 0-.354-.117-.354-.352V.353c0-.236.118-.353.354-.353h2.431c.234 0 .351.117.351.353v14.343l6.203-6.272c.165-.165.33-.246.495-.246h3.239c.144 0 .236.06.285.18.046.149.034.255-.036.315l-6.555 6.344 6.836 8.507c.095.104.117.208.07.335"/></svg>
+        </div>
+        <div class="social-link-info">
+          <div class="social-link-name">Kaggle</div>
+          <div class="social-link-handle">@aisoltani</div>
+        </div>
+        <span class="social-link-arrow">→</span>
+      </a>
+      <a href="https://x.com/AISoltani" target="_blank" class="social-link">
+        <div class="social-link-icon icon-twitter">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </div>
+        <div class="social-link-info">
+          <div class="social-link-name">X (Twitter)</div>
+          <div class="social-link-handle">@AISoltani</div>
+        </div>
+        <span class="social-link-arrow">→</span>
+      </a>
+      <a href="mailto:amirsoltani.os@gmail.com" class="social-link">
+        <div class="social-link-icon icon-email">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#ea4335"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.910 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>
+        </div>
+        <div class="social-link-info">
+          <div class="social-link-name">Email</div>
+          <div class="social-link-handle">amirsoltani.os@gmail.com</div>
+        </div>
+        <span class="social-link-arrow">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">AISoltani</div>
+  <div class="footer-copy">© 2025 Amir Soltani · AI Engineer &amp; Computer Vision Researcher</div>
+  <div class="footer-links">
+    <a href="https://github.com/AISoltani" target="_blank">GitHub</a>
+    <a href="https://www.linkedin.com/in/amir-soltani-aisoltani/" target="_blank">LinkedIn</a>
+    <a href="#hero">Back to Top ↑</a>
+  </div>
+</footer>
+
+<script>
+/* ── NEURAL NETWORK CANVAS ── */
+const canvas = document.getElementById('neuralCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, nodes = [], animId;
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const NODE_COUNT = 80;
+for (let i = 0; i < NODE_COUNT; i++) {
+  nodes.push({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    vx: (Math.random() - 0.5) * 0.4,
+    vy: (Math.random() - 0.5) * 0.4,
+    r: Math.random() * 2 + 1
+  });
+}
+
+function drawNeural() {
+  ctx.clearRect(0, 0, W, H);
+  // Move nodes
+  nodes.forEach(n => {
+    n.x += n.vx; n.y += n.vy;
+    if (n.x < 0 || n.x > W) n.vx *= -1;
+    if (n.y < 0 || n.y > H) n.vy *= -1;
+  });
+  // Draw connections
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const dx = nodes[i].x - nodes[j].x;
+      const dy = nodes[i].y - nodes[j].y;
+      const d = Math.sqrt(dx * dx + dy * dy);
+      if (d < 150) {
+        const alpha = (1 - d / 150) * 0.4;
+        ctx.beginPath();
+        ctx.moveTo(nodes[i].x, nodes[i].y);
+        ctx.lineTo(nodes[j].x, nodes[j].y);
+        ctx.strokeStyle = `rgba(0,212,255,${alpha})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+  // Draw nodes
+  nodes.forEach(n => {
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0,212,255,0.5)';
+    ctx.fill();
+  });
+  animId = requestAnimationFrame(drawNeural);
+}
+drawNeural();
+
+/* ── TYPEWRITER ── */
+const words = ['Computer Vision.','Medical AI.','Deep Learning.','Real-Time Systems.','Edge Deployment.'];
+let wi = 0, ci = 0, deleting = false;
+const tw = document.getElementById('typewriter');
+function typeStep() {
+  const word = words[wi];
+  if (!deleting) {
+    tw.textContent = word.slice(0, ++ci);
+    if (ci === word.length) { deleting = true; setTimeout(typeStep, 1800); return; }
+  } else {
+    tw.textContent = word.slice(0, --ci);
+    if (ci === 0) { deleting = false; wi = (wi + 1) % words.length; }
+  }
+  setTimeout(typeStep, deleting ? 60 : 90);
+}
+typeStep();
+
+/* ── SCROLL REVEAL ── */
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+revealEls.forEach(el => io.observe(el));
+
+/* ── TIMELINE REVEAL ── */
+const timelineItems = document.querySelectorAll('.timeline-item');
+const tio = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 150);
+    }
+  });
+}, { threshold: 0.1 });
+timelineItems.forEach(el => tio.observe(el));
+
+/* ── NAV SCROLL ── */
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').style.background =
+    window.scrollY > 50 ? 'rgba(4,8,15,0.97)' : 'rgba(4,8,15,0.85)';
+});
+
+/* ── PROJECT FILTER ── */
+function filterProjects(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.project-card').forEach(card => {
+    if (cat === 'all' || card.dataset.cat === cat) {
+      card.style.display = '';
+      card.style.animation = 'fadeUp 0.4s ease forwards';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+/* ── MOBILE MENU ── */
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+</script>
+</body>
+</html>
