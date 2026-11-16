@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Amir Soltani | Computer vision and machine learning engineer</title>
 <meta name="description" content="Amir Soltani is a senior computer vision and machine learning engineer working on medical imaging, satellite and thermal imagery, driver assistance and real-time edge AI, with recent work in vision-language models and LLMs.">
+<meta name="theme-color" content="#04060A">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aisoltani.github.io/">
 <meta property="og:title" content="Amir Soltani | Computer vision and machine learning engineer">
@@ -15,16 +16,18 @@
 <script>try{var b=localStorage.getItem("band");document.documentElement.dataset.band=/^(visible|thermal|infrared|xray)$/.test(b)?b:matchMedia("(prefers-color-scheme: dark)").matches?"thermal":"visible"}catch(e){}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Amir Soltani","jobTitle":"Senior Computer Vision and Machine Learning Engineer","url":"https://aisoltani.github.io/","email":"mailto:amirsoltani.os@gmail.com","alumniOf":[{"@type":"CollegeOrUniversity","name":"Amirkabir University of Technology"},{"@type":"CollegeOrUniversity","name":"Fasa University"}],"sameAs":["https://github.com/AISoltani","https://www.linkedin.com/in/amir-soltani-aisoltani/","https://www.kaggle.com/aisoltani","https://x.com/AISoltani"]}</script>
 <style>
-/* Four sensor views. Each one is a full palette. */
-:root{--bg:#DDE8F0;--panel:#CFDDE8;--ink:#0A1D37;--muted:#44566F;--accent:#1447E6;--mark:#FFD23F;--on-mark:#0A1D37;--line:rgba(10,29,55,.22);color-scheme:light}
-[data-band=thermal]{--bg:#150B33;--panel:#21104C;--ink:#FFF1BF;--muted:#D2B4D0;--accent:#FF8A1F;--mark:#FF8A1F;--on-mark:#150B33;--line:rgba(255,241,191,.24);color-scheme:dark}
-[data-band=infrared]{--bg:#B3122F;--panel:#980F27;--ink:#FFF4F0;--muted:#FFD3CE;--accent:#A5F2FF;--mark:#071A2E;--on-mark:#FFF4F0;--line:rgba(255,244,240,.34);color-scheme:dark}
-[data-band=xray]{--bg:#0C1418;--panel:#152229;--ink:#E4EEF2;--muted:#93AAB4;--accent:#A9E4F5;--mark:#E4EEF2;--on-mark:#0C1418;--line:rgba(228,238,242,.22);color-scheme:dark}
+/* Four sensor views. The page is black in all of them; each view recolours the 3D field, the accents
+   and the hero card. The --s-* values are the hero card's own palette. */
+:root{--bg:#04060A;--panel:rgba(11,16,25,.78);--ink:#E9EFF7;--muted:#96A3B8;--accent:#6AA5FF;--mark:#FFD23F;--on-mark:#0A1D37;--line:rgba(233,239,247,.17);--s-bg:#CFDDE8;--s-ink:#0A1D37;--s-ac:#1447E6;color-scheme:dark}
+[data-band=thermal]{--bg:#06030D;--panel:rgba(24,12,46,.78);--ink:#FFF1BF;--muted:#D2B4D0;--accent:#FF8A1F;--mark:#FF8A1F;--on-mark:#150B33;--line:rgba(255,241,191,.19);--s-bg:#21104C;--s-ink:#FFF1BF;--s-ac:#FF8A1F}
+[data-band=infrared]{--bg:#0A0306;--panel:rgba(40,8,17,.8);--ink:#FFF4F0;--muted:#E8BEBA;--accent:#FF6B86;--mark:#A5F2FF;--on-mark:#071A2E;--line:rgba(255,244,240,.19);--s-bg:#B3122F;--s-ink:#FFF4F0;--s-ac:#A5F2FF}
+[data-band=xray]{--bg:#030607;--panel:rgba(15,25,30,.8);--ink:#E4EEF2;--muted:#93AAB4;--accent:#A9E4F5;--mark:#E4EEF2;--on-mark:#0C1418;--line:rgba(228,238,242,.19);--s-bg:#152229;--s-ink:#E4EEF2;--s-ac:#A9E4F5}
 
 *{box-sizing:border-box;margin:0}
 [hidden]{display:none!important}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:Archivo,"Helvetica Neue",Arial,sans-serif;font-size:1.0625rem;line-height:1.55;padding-bottom:6rem;transition:background-color .25s,color .25s;-webkit-font-smoothing:antialiased}
+html{background:var(--bg);scroll-behavior:smooth;transition:background-color .3s}
+body{color:var(--ink);font-family:Archivo,"Helvetica Neue",Arial,sans-serif;font-size:1.0625rem;line-height:1.55;padding-bottom:6rem;-webkit-font-smoothing:antialiased}
+#depth{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
 a{color:inherit;text-decoration-color:var(--accent);text-decoration-thickness:.11em;text-underline-offset:.2em}
 a:hover{color:var(--accent)}
 :focus-visible{outline:3px solid var(--accent);outline-offset:3px}
@@ -32,20 +35,20 @@ a:hover{color:var(--accent)}
 
 .top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.4rem 1.5rem;padding:1.1rem 0}
 .top b{font-weight:700;font-stretch:115%}
-.top nav{display:flex;flex-wrap:wrap;gap:.3rem 1.4rem}
+.top nav{display:flex;flex-wrap:wrap;gap:.3rem 1.3rem}
 .top nav a{text-decoration:none}
 .top nav a:hover{text-decoration:underline}
 
 /* Hero: a tracked scene with the name as one more detection */
-.scene{position:relative;min-height:min(72vh,44rem);background:var(--panel);overflow:hidden;display:flex;align-items:flex-end;transition:background-color .25s}
-.scene canvas{position:absolute;inset:0;width:100%;height:100%}
-.name{position:relative;display:inline-block;margin:5rem clamp(.8rem,4vw,3rem) clamp(1rem,3.5vw,2.6rem);padding:.07em .09em .01em;font-weight:800;font-stretch:62%;font-size:clamp(4.6rem,19vw,17rem);line-height:.8;letter-spacing:-.012em;text-transform:uppercase;animation:focus .9s cubic-bezier(.2,.7,.2,1) both}
-.name::before{content:"";position:absolute;inset:0;border:3px solid var(--accent);animation:lock .8s .55s steps(5) both}
-.name::after{content:attr(data-tag);position:absolute;left:-3px;bottom:100%;background:var(--accent);color:var(--panel);font-size:.95rem;font-weight:600;font-stretch:100%;line-height:1;letter-spacing:0;text-transform:none;padding:.4em .6em;white-space:nowrap;animation:lock .8s .55s steps(5) both}
+.scene{position:relative;min-height:min(66vh,40rem);background:var(--s-bg);color:var(--s-ink);overflow:hidden;display:flex;align-items:flex-end;transition:background-color .3s}
+.scene canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+.name{position:relative;display:inline-block;margin:4rem clamp(1rem,4vw,3rem) clamp(1.1rem,3vw,2.4rem);padding:.07em .1em .01em;font-weight:800;font-stretch:62%;font-size:clamp(2.6rem,8.5vw,7rem);line-height:.82;letter-spacing:-.01em;text-transform:uppercase;animation:focus .9s cubic-bezier(.2,.7,.2,1) both}
+.name::before{content:"";position:absolute;inset:0;border:2px solid var(--s-ac);animation:lock .8s .55s steps(5) both}
+.name::after{content:attr(data-tag);position:absolute;left:0;bottom:100%;background:var(--s-ac);color:var(--s-bg);font-size:.78rem;font-weight:600;font-stretch:100%;line-height:1;letter-spacing:0;text-transform:none;padding:.38em .55em;white-space:nowrap;animation:lock .8s .55s steps(5) both}
 @keyframes focus{from{filter:blur(16px);opacity:.3}to{filter:blur(0);opacity:1}}
 @keyframes lock{0%{opacity:0;transform:translate(14px,-10px) scale(1.1)}40%{opacity:1;transform:translate(-7px,6px) scale(.97)}75%{opacity:1;transform:translate(3px,-2px) scale(1.01)}100%{opacity:1;transform:none}}
 
-.intro{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:clamp(1.5rem,5vw,4.5rem);padding:clamp(2rem,6vw,4.5rem) 0 clamp(1rem,3vw,2rem)}
+.intro{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:clamp(1.5rem,5vw,4.5rem);margin-top:1rem;padding:clamp(1.3rem,4vw,3rem);background:var(--panel);border:1px solid var(--line)}
 .lede{font-size:clamp(1.4rem,2.7vw,2.15rem);line-height:1.2;font-weight:500;max-width:25em}
 .side{color:var(--muted);max-width:36em}
 .side p+p{margin-top:1rem}
@@ -54,9 +57,25 @@ a:hover{color:var(--accent)}
 .btn{display:inline-block;background:var(--ink);color:var(--bg);font-weight:650;font-stretch:108%;text-decoration:none;padding:.8em 1.25em}
 .btn:hover{background:var(--accent);color:var(--bg)}
 
-section{padding:clamp(2.8rem,7vw,5.5rem) 0 0}
+section{padding:clamp(3rem,8vw,6rem) 0 0}
 h2{font-size:clamp(2rem,4.6vw,3.3rem);line-height:1.04;font-weight:650;font-stretch:118%;letter-spacing:-.015em}
-.sub{color:var(--muted);max-width:38em;margin-top:.7rem}
+.sub{color:var(--muted);max-width:40em;margin-top:.7rem}
+.panel{margin-top:1.8rem;padding:clamp(1rem,2.6vw,1.8rem);background:var(--panel);border:1px solid var(--line)}
+.with{color:var(--muted);font-size:.94rem;max-width:44em;margin-top:.6rem}
+
+/* Showcase: each project picture is framed like a detection, with its class label on top */
+.show{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(1.2rem,3.5vw,3rem);align-items:center;margin-top:1.4rem;padding:clamp(1rem,2.4vw,1.8rem);background:var(--panel);border:1px solid var(--line)}
+.show:first-child{margin-top:1.8rem}
+.show:nth-child(even) .plate{order:2}
+.plate{position:relative;margin-top:1.5rem;border:2px solid var(--accent);background:#000}
+.plate::after{content:attr(data-tag);position:absolute;left:-2px;bottom:100%;background:var(--accent);color:var(--bg);font-size:.78rem;font-weight:650;line-height:1;padding:.4em .55em;white-space:nowrap}
+.zoom{display:block;cursor:zoom-in}
+.plate img{display:block;width:100%;height:auto;max-height:34rem;object-fit:contain}
+.strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px}
+.plate>a+.strip{margin-top:2px}
+.from{color:var(--muted);font-size:.94rem}
+.copy h3{font-size:clamp(1.3rem,2.3vw,1.8rem);line-height:1.12;font-weight:650;font-stretch:110%;margin:.25rem 0 .5rem}
+.key{font-size:clamp(1.5rem,3vw,2.3rem);line-height:1;font-weight:800;font-stretch:68%;color:var(--accent);margin-bottom:.8rem}
 
 /* Shared row pattern for the timeline and the project list */
 .track,.row{border-top:1px solid var(--line)}
@@ -66,9 +85,8 @@ summary h3{font-size:1.14rem;font-weight:620;font-stretch:108%}
 summary:hover h3,[open]>summary h3{color:var(--accent)}
 .fig{font-weight:650;font-variant-numeric:tabular-nums;text-align:right;max-width:17rem}
 .ctx{grid-column:1/-1;color:var(--muted);font-size:.94rem}
-.with{color:var(--muted);font-size:.94rem;max-width:44em;margin-top:.6rem}
 
-.years{display:grid;grid-template-columns:repeat(11,1fr);margin-top:1.8rem;font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.years{display:grid;grid-template-columns:repeat(11,1fr);margin-bottom:.6rem;font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
 .bar{grid-column:1/-1;display:block;position:relative;height:.7rem;margin-top:.45rem;background:repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px calc(100%/11))}
 .bar i{position:absolute;top:0;bottom:0;left:calc(var(--s)/132*100%);width:calc((var(--e) - var(--s))/132*100%);background:var(--accent)}
 .study .bar i{background:repeating-linear-gradient(135deg,var(--muted) 0 3px,transparent 3px 7px)}
@@ -76,25 +94,29 @@ summary:hover h3,[open]>summary h3{color:var(--accent)}
 .track li{margin:.35rem 0}
 .track .with{margin-top:0;padding-bottom:1.3rem}
 
-.tools{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem .4rem;margin:1.8rem 0 .7rem}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem .4rem;margin-bottom:.7rem}
 .tools button,.bands button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .tools button{padding:.35em .6em}
 .tools button[aria-pressed=true]{background:var(--mark);color:var(--on-mark);font-weight:650}
 .tools input{font:inherit;color:inherit;background:none;border:0;border-bottom:2px solid var(--ink);border-radius:0;padding:.35em .1em;width:min(100%,20rem);margin-left:auto}
 .tools input::placeholder{color:var(--muted);opacity:1}
 .count{color:var(--muted);font-size:.94rem;margin-bottom:.7rem}
-.more{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,24rem);gap:1rem 2rem;padding:0 0 1.5rem}
+.more{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,22rem);gap:1rem 2rem;padding:0 0 1.5rem}
 .more p{max-width:40em}
-.plate img{display:block;width:100%;height:auto;background:var(--panel)}
-.plate figcaption{font-size:.82rem;color:var(--muted);margin-top:.35rem}
-html:not([data-band=visible]) .plate figcaption::after{content:"Recoloured by this page's sensor view. Switch to Visible to see the original image."}
-[data-band=thermal] .plate img{filter:url(#f-thermal)}
-[data-band=infrared] .plate img{filter:url(#f-cir)}
-[data-band=xray] .plate img{filter:grayscale(1) invert(1) contrast(1.15)}
+.more img{display:block;width:100%;height:auto;border:1px solid var(--line);background:#000}
 
-.kit{display:grid;grid-template-columns:minmax(9rem,15rem) minmax(0,1fr);gap:.9rem 2rem;margin-top:1.8rem;max-width:60rem}
-.kit dt{font-weight:650;font-stretch:110%}
-.creds{display:grid;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));gap:2rem 3rem;margin-top:1.8rem}
+.gal{columns:3 17rem;column-gap:1rem;margin-top:1.8rem}
+.shot{break-inside:avoid;margin-bottom:1rem;background:var(--panel);border:1px solid var(--line)}
+.shot img{display:block;width:100%;height:auto}
+.shot figcaption{padding:.6rem .8rem;font-size:.92rem;color:var(--muted)}
+
+.kit{display:grid;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));gap:1rem;margin-top:1.8rem}
+.kit div{padding:1.1rem 1.2rem;background:var(--panel);border:1px solid var(--line)}
+.kit dt{font-weight:650;font-stretch:110%;margin-bottom:.7rem}
+.kit dd{display:flex;flex-wrap:wrap;gap:.35rem;color:var(--muted)}
+.kit dd span{border:1px solid var(--line);padding:.15em .55em;font-size:.9rem;color:var(--ink)}
+.creds{display:grid;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));gap:2rem 3rem}
+.creds+.creds{margin-top:2rem}
 .creds h3{font-size:1.05rem;font-weight:650;font-stretch:110%;margin-bottom:.4rem}
 .creds ul{list-style:none;padding:0}
 .creds li{margin:.4rem 0}
@@ -105,30 +127,32 @@ html:not([data-band=visible]) .plate figcaption::after{content:"Recoloured by th
 footer{color:var(--muted);font-size:.9rem;padding:3rem 0 0}
 
 /* Sensor switch */
-.bands{position:fixed;left:50%;bottom:.9rem;transform:translateX(-50%);z-index:5;display:flex;align-items:center;background:var(--ink);color:var(--bg);padding:.28rem;max-width:calc(100vw - 1rem);transition:background-color .25s,color .25s}
+.bands{position:fixed;left:50%;bottom:.9rem;transform:translateX(-50%);z-index:5;display:flex;align-items:center;background:var(--ink);color:var(--bg);padding:.28rem;max-width:calc(100vw - 1rem);transition:background-color .3s,color .3s}
 .bands span{padding:0 .7rem 0 .55rem;font-size:.86rem;white-space:nowrap}
 .bands button{padding:.5em .8em;font-size:.95rem;font-weight:600;white-space:nowrap}
 .bands button[aria-pressed=true]{background:var(--bg);color:var(--ink)}
 .bands kbd{font:inherit;opacity:.65;margin-right:.4em}
 
-@media(max-width:760px){.intro,.more,.kit{grid-template-columns:1fr}.kit{gap:.15rem}.kit dd{margin-bottom:.9rem}summary{grid-template-columns:1fr}.fig{text-align:left;max-width:none}.tools input{margin-left:0;width:100%}}
+/* Enlarged picture */
+dialog{margin:auto;padding:0;border:0;background:none;max-width:96vw;max-height:96vh;overflow:visible}
+dialog::backdrop{background:rgba(0,0,0,.9)}
+dialog img{display:block;max-width:96vw;max-height:86vh}
+dialog button{display:block;margin:.6rem auto 0;padding:.5em 1.1em;font:inherit;font-weight:650;border:0;background:#fff;color:#000;cursor:pointer}
+
+@media(max-width:760px){.intro,.show,.more{grid-template-columns:1fr}.show:nth-child(even) .plate{order:0}summary{grid-template-columns:1fr}.fig{text-align:left;max-width:none}.tools input{margin-left:0;width:100%}}
 @media(max-width:560px){.bands span,.bands kbd{display:none}.bands button{padding:.55em .6em;font-size:.88rem}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
-@media print{.bands,.scene canvas,.tools{display:none}body{padding:0}}
+@media print{#depth,.bands,.scene canvas,.tools{display:none}body{padding:0}}
 </style>
 </head>
 <body>
 
-<!-- Colour maps used to re-render project images in the thermal and infrared views -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
-<filter id="f-thermal" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="table" tableValues="0 .16 .4 .74 .93 .98 .99"/><feFuncG type="table" tableValues="0 .04 .08 .22 .41 .71 1"/><feFuncB type="table" tableValues=".02 .33 .43 .33 .15 .1 .64"/></feComponentTransfer></filter>
-<filter id="f-cir" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 1 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 1 0"/></filter>
-</defs></svg>
+<canvas id="depth" aria-hidden="true"></canvas>
 
 <div class="wrap">
 <header class="top">
   <b>Amir Soltani</b>
-  <nav aria-label="Sections"><a href="#experience">Experience</a><a href="#work">Work</a><a href="#tools">Tools</a><a href="#credentials">Credentials</a><a href="#contact">Contact</a></nav>
+  <nav aria-label="Sections"><a href="#showcase">Showcase</a><a href="#experience">Experience</a><a href="#work">All projects</a><a href="#photos" id="nav-photos" hidden>Photos</a><a href="#tools">Tools</a><a href="#credentials">Credentials</a><a href="#contact">Contact</a></nav>
 </header>
 
 <main>
@@ -140,17 +164,24 @@ footer{color:var(--muted);font-size:.9rem;padding:3rem 0 0}
 <div class="intro">
   <div>
     <p class="lede">I build vision systems that have to work outside the lab: on a phone in a gym, on a drone above a fire line, on a Jetson in a truck cab, on a clinician's review screen.</p>
-    <div class="acts"><a class="btn" href="#work">See the work</a><a href="mailto:amirsoltani.os@gmail.com">amirsoltani.os@gmail.com</a></div>
+    <div class="acts"><a class="btn" href="#showcase">See the work</a><a href="mailto:amirsoltani.os@gmail.com">amirsoltani.os@gmail.com</a></div>
   </div>
   <div class="side">
     <p><strong>Senior computer vision and machine learning engineer.</strong> 10+ years across medical imaging, remote sensing, driver assistance and industrial monitoring, covering the whole model lifecycle from data and annotation to deployment. I am most useful where labels are scarce, objects are small and the answer is needed in milliseconds. Lately I have been connecting vision models to language: retrieval with CLIP, DINOv2 and SigLIP, text-guided annotation and LLM pipelines for clinical documents.</p>
-    <p>This page can be viewed the way my sensors see. You are looking at it in <strong id="now">visible light</strong>. Change it with the switch at the bottom of the screen, or press 1 to 4.</p>
+    <p>The landscape behind this page is a 3D point cloud, drawn live and swept by a scan line. Scrolling flies you over it. You are seeing everything in <strong id="now">visible light</strong>. Change the sensor with the switch at the bottom of the screen, or press 1 to 4.</p>
   </div>
 </div>
+
+<section id="showcase">
+  <h2>Showcase</h2>
+  <p class="sub">Projects with pictures, each framed the way a detector would mark it. Select a picture to enlarge it.</p>
+  <div id="show"><noscript><p class="panel">The showcase needs JavaScript. The code is on <a href="https://github.com/AISoltani">GitHub</a>.</p></noscript></div>
+</section>
 
 <section id="experience">
   <h2>Experience</h2>
   <p class="sub">Six roles since 2016. Several were remote and part-time or project-based, so they ran side by side from 2022 to 2024. The bars show when. Select a role for details.</p>
+  <div class="panel">
   <div class="years" aria-hidden="true"><span>2016</span><span>2017</span><span>2018</span><span>2019</span><span>2020</span><span>2021</span><span>2022</span><span>2023</span><span>2024</span><span>2025</span><span>2026</span></div>
 
   <details class="track"><summary><h3>Computer Vision Researcher</h3><span class="fig">May 2025 to Oct 2026</span><span class="ctx">Nova Vision, Tallinn, Estonia. Remote, part-time.</span><span class="bar" style="--s:112;--e:130"><i></i></span></summary>
@@ -218,43 +249,54 @@ footer{color:var(--muted);font-size:.9rem;padding:3rem 0 0}
     </ul>
     <p class="with">Python, OpenCV, YOLO, TensorFlow, PyTorch, Tesseract OCR, Raspberry Pi, Jetson</p>
   </details>
+  </div>
 </section>
 
 <section id="work">
-  <h2>Work</h2>
-  <p class="sub">Client work, research and open-source projects. Pick a field, or type a word such as thermal, Jetson or RAG.</p>
-  <div class="tools" id="filters"><input id="q" type="search" placeholder="Search projects" aria-label="Search projects"></div>
-  <p class="count" id="count" aria-live="polite"></p>
-  <div id="list"><noscript><p>The project list needs JavaScript. The code is on <a href="https://github.com/AISoltani">GitHub</a>.</p></noscript></div>
+  <h2>All projects</h2>
+  <p class="sub">Client work, research and open source in one list. Pick a field, or type a word such as thermal, Jetson or RAG.</p>
+  <div class="panel">
+    <div class="tools" id="filters"><input id="q" type="search" placeholder="Search projects" aria-label="Search projects"></div>
+    <p class="count" id="count" aria-live="polite"></p>
+    <div id="list"><noscript><p>The project list needs JavaScript. The code is on <a href="https://github.com/AISoltani">GitHub</a>.</p></noscript></div>
+  </div>
+</section>
+
+<section id="photos" hidden>
+  <h2>Conferences and labs</h2>
+  <p class="sub">Photos from computer vision conferences and AI labs. Select one to enlarge it.</p>
+  <div class="gal" id="gal"></div>
 </section>
 
 <section id="tools">
   <h2>Tools</h2>
   <dl class="kit">
-    <dt>Computer vision</dt><dd>Object detection, multi-object tracking, instance and semantic segmentation, pose estimation, OCR, 3D vision, small-object detection. OpenCV, MMDetection, MONAI, MediaPipe.</dd>
-    <dt>Deep learning</dt><dd>PyTorch, TensorFlow, Keras, scikit-learn, Transformers, U-Net, R-CNN family, YOLO, few-shot and weakly supervised learning, metric learning.</dd>
-    <dt>Foundation models and LLMs</dt><dd>CLIP, DINOv2, SigLIP, Grounding DINO, SAM 2 and SAM 3, Hugging Face Transformers, LangChain, LangGraph, LlamaIndex, RAG, PEFT and LoRA.</dd>
-    <dt>Deployment</dt><dd>ONNX Runtime, TensorRT, INT8 quantization, NVIDIA DeepStream, TensorFlow Lite, Docker, FastAPI, MLflow, Weights &amp; Biases, Comet, Neptune.</dd>
-    <dt>Geospatial and data</dt><dd>GDAL, Rasterio, GeoPandas, TorchGeo, SAHI, Sentinel Hub, Prithvi, Clay, CVAT, Labelbox, Roboflow.</dd>
-    <dt>Languages and platforms</dt><dd>Python, C++, TypeScript, SQL, Linux, AWS, Azure, NVIDIA Jetson, Raspberry Pi.</dd>
+    <div><dt>Computer vision</dt><dd>Object detection, Multi-object tracking, Instance and semantic segmentation, Pose estimation, OCR, 3D vision, Small-object detection, OpenCV, MMDetection, MONAI, MediaPipe</dd></div>
+    <div><dt>Deep learning</dt><dd>PyTorch, TensorFlow, Keras, scikit-learn, Transformers, U-Net, R-CNN family, YOLO, Few-shot learning, Weakly supervised learning, Metric learning</dd></div>
+    <div><dt>Foundation models and LLMs</dt><dd>CLIP, DINOv2, SigLIP, Grounding DINO, SAM 2, SAM 3, Hugging Face Transformers, LangChain, LangGraph, LlamaIndex, RAG, PEFT and LoRA</dd></div>
+    <div><dt>Deployment</dt><dd>ONNX Runtime, TensorRT, INT8 quantization, NVIDIA DeepStream, TensorFlow Lite, Docker, FastAPI, MLflow, Weights &amp; Biases, Comet, Neptune</dd></div>
+    <div><dt>Geospatial and data</dt><dd>GDAL, Rasterio, GeoPandas, TorchGeo, SAHI, Sentinel Hub, Prithvi, Clay, CVAT, Labelbox, Roboflow</dd></div>
+    <div><dt>Languages and platforms</dt><dd>Python, C++, TypeScript, SQL, Linux, AWS, Azure, NVIDIA Jetson, Raspberry Pi</dd></div>
   </dl>
 </section>
 
 <section id="credentials">
   <h2>Education and certificates</h2>
   <p class="sub">Each certificate links to its verification page.</p>
-  <div class="creds">
-    <div><h3>Education</h3><ul>
-      <li>M.Sc. Computer Engineering, Artificial Intelligence<small>Amirkabir University of Technology (Tehran Polytechnic), 2018 to 2022. GPA 3.86 of 4. Thesis: Few-shot Cascade R-CNN for Human Forensic Age Estimation.</small></li>
-      <li>B.Sc. Computer Engineering<small>Fasa University, 2013 to 2017. Thesis: 3D Human Body Reconstruction from Clothed Images.</small></li>
-    </ul></div>
-    <div><h3>Languages</h3><ul>
-      <li>English, fluent<small><a href="https://app.smalltalk2.me/cert/f7ddd517" rel="noopener">SmallTalk2 speaking test certificate</a></small></li>
-      <li>French, DELF B1</li>
-      <li>Persian, native</li>
-    </ul></div>
+  <div class="panel">
+    <div class="creds">
+      <div><h3>Education</h3><ul>
+        <li>M.Sc. Computer Engineering, Artificial Intelligence<small>Amirkabir University of Technology (Tehran Polytechnic), 2018 to 2022. GPA 3.86 of 4. Thesis: Few-shot Cascade R-CNN for Human Forensic Age Estimation.</small></li>
+        <li>B.Sc. Computer Engineering<small>Fasa University, 2013 to 2017. Thesis: 3D Human Body Reconstruction from Clothed Images.</small></li>
+      </ul></div>
+      <div><h3>Languages</h3><ul>
+        <li>English, fluent<small><a href="https://app.smalltalk2.me/cert/f7ddd517" rel="noopener">SmallTalk2 speaking test certificate</a></small></li>
+        <li>French, DELF B1</li>
+        <li>Persian, native</li>
+      </ul></div>
+    </div>
+    <div class="creds" id="certs"></div>
   </div>
-  <div class="creds" id="certs"></div>
 </section>
 
 <section id="contact">
@@ -276,15 +318,20 @@ footer{color:var(--muted);font-size:.9rem;padding:3rem 0 0}
   <button type="button" data-b="xray" aria-pressed="false"><kbd>4</kbd>X-ray</button>
 </div>
 
+<dialog id="zoom" aria-label="Enlarged picture"><img alt=""><form method="dialog"><button>Close</button></form></dialog>
+
 <script>
 (function(){
 "use strict";
 var root=document.documentElement,still=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function $(i){return document.getElementById(i)}
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;")}
 
 /* ---------- Projects ----------
-   To add one, append a row: [title, fields, source, headline figure, description, built with, image path or 0, repo name or 0]
-   fields: med geo mov drv ind edg vlm (space separated). source: a key of SRC. */
+   To add one, append a row: [title, fields, source, headline figure, description, built with, pictures, repo name or 0]
+   fields: med geo mov drv ind edg vlm (space separated). source: a key of SRC.
+   pictures: 0, one path, or a list of paths (relative to raw.githubusercontent.com/AISoltani/).
+   Any row with a picture gets its own block in the showcase automatically. */
 var R="https://raw.githubusercontent.com/AISoltani/",G="https://github.com/AISoltani/";
 var SRC={nova:"Nova Vision, 2025 to 2026",vr:"VRVis, 2023 to 2025",sc:"Sculp AI, 2022 to 2024",sm:"SoftwareMotion, 2022 to 2023",g4:"G42 Healthcare, 2020 to 2021",am:"AMA-CTRL, 2016 to 2019",re:"Research project",pr:"Independent prototype",os:"Open source",sh:"Showcase"};
 var FIELDS=[["all","All"],["med","Medical imaging"],["geo","Satellite and thermal"],["mov","Fitness and pose"],["drv","Driver assistance"],["ind","Industrial"],["edg","Edge and tooling"],["vlm","Language and vision"]];
@@ -319,7 +366,7 @@ var WORK=[
 ["Where was this aerial photo taken?","geo","pr","Place recognition","Visual place recognition and sequence matching to find related aerial frames under changes in viewpoint, scale and illumination. Nearest-neighbour search shortlists candidate locations for review.","image descriptors, embeddings and nearest-neighbour search",0,0],
 ["AI Fitness Coach","mov edg","sc","40+ exercises, under 30 ms","A mobile product that gives exercise-form feedback from real-time pose estimation during live and recorded workouts. Joint-angle tracking and repetition counting run on the device.","ONNX Runtime and TensorRT",0,0],
 ["PhysioTrack","mov","sc","Rehabilitation","A movement-analysis workflow for rehabilitation and progressive-load guidance, reviewed by licensed physiotherapists.","pose estimation and movement analysis",0,0],
-["Tracking muscle and fat change between sessions","mov","sc","Dice 0.94, mAP@50 0.92","Muscle and fat segmentation with repeat-session image alignment for consistent progress tracking. Precision 90.2% and recall 91% on the internal benchmark. A distilled MobileSAM-based model under 35 MB runs on mid-range phones.","segmentation, image alignment and a distilled MobileSAM","labelbox/refs/heads/master/Muscle.png",0],
+["Tracking muscle and fat change between sessions","mov","sc","Dice 0.94, mAP@50 0.92","Muscle and fat segmentation with repeat-session image alignment for consistent progress tracking. Precision 90.2% and recall 91% on the internal benchmark. A distilled MobileSAM-based model under 35 MB runs on mid-range phones.","segmentation, image alignment and a distilled MobileSAM",["labelbox/refs/heads/master/Muscle.png","AISoltani/main/.github/workflows/1.gif","AISoltani/main/.github/workflows/2.gif","AISoltani/main/.github/workflows/33.gif"],0],
 ["Pose that holds up when the view is blocked","mov","sc","6% better PCKh","ViTPose+ fine-tuned with synthetic gym augmentations, improving robustness on occluded users by 6% PCKh on the internal benchmark.","ViTPose+ and synthetic augmentation",0,0],
 ["A fitness dataset annotators agree on","mov","sc","13k+ images","Front, back and side-view images organized for muscle-region annotation, with QA in CVAT and Labelbox, active-learning review cycles and feedback from sports-medicine specialists. A six-person data team.","CVAT, Labelbox and active learning",0,0],
 ["Form feedback that also listens","mov","sc","Pose plus audio","Pose outputs combined with audio cues such as repetition tempo and breathing, for more useful feedback in virtual classes.","pose estimation and audio cues",0,0],
@@ -344,7 +391,7 @@ var WORK=[
 ["Vision-driven process automation","ind","sh","RPA","Computer vision that drives robotic process automation.","computer vision","Vison_advanced/refs/heads/main/RPA2.png",0],
 ["Traffic analytics and vehicle tracking","ind","sh","Vehicle tracking","Vehicle detection and tracking for traffic analytics.","detection and tracking","Vison_advanced/refs/heads/main/TAS.png",0],
 ["Drone-assisted inspection of electrical substations","ind","sh","Asset and anomaly visualization","A visual showcase of drone-assisted inspection of substation assets, including transformers, busbars, circuit breakers and insulators, with annotated examples of surface conditions such as oil staining, corrosion and potential overheating.","drone imagery and visual anomaly annotations","Vison_advanced/refs/heads/main/Drone-assisted.png",0],
-["YOLOv11-EdgeSuite for Android","edg","os","On-device","A mobile vision toolkit that runs YOLOv11 detection and segmentation models on smartphones.","YOLOv11, Kotlin and Android","Yolov11-Android-Tool-Kotlin/refs/heads/main/SCR1.jpg","Yolov11-Android-Tool-Kotlin"],
+["YOLOv11-EdgeSuite for Android","edg","os","On-device","A mobile vision toolkit that runs YOLOv11 detection and segmentation models on smartphones.","YOLOv11, Kotlin and Android",["Yolov11-Android-Tool-Kotlin/refs/heads/main/SCR1.jpg","Yolov11-Android-Tool-Kotlin/refs/heads/main/SCR2.jpg","Yolov11-Android-Tool-Kotlin/refs/heads/main/SRC3.jpg"],"Yolov11-Android-Tool-Kotlin"],
 ["Licence plate detection and recognition","edg","os","YOLOv7","Plate detection and recognition with YOLOv7.","YOLOv7",0,"Yolov7_LPR"],
 ["Image processing toolkit","edg","os","OpenCV","A collection of image-processing tools built on OpenCV.","Python and OpenCV",0,"Image_Processing_Tools"],
 ["Edges and corners on a Raspberry Pi 4","edg","re","Low-light video","Adaptive thresholding for low-light video and GPU-accelerated Harris and Sobel detection on Raspberry Pi 4.","OpenCV and Raspberry Pi 4",0,0],
@@ -354,15 +401,39 @@ var WORK=[
 ["Search medical cases by text or image","vlm med","pr","VLM prototype","Text-to-image and image-to-image retrieval for medical cases using shared visual and text embeddings, with a language-model layer that summarizes retrieved evidence for reviewer triage.","shared visual and text embeddings",0,0]
 ];
 
-var list=document.getElementById("list"),tools=document.getElementById("filters"),q=document.getElementById("q"),count=document.getElementById("count"),cur="all";
+var NAME={};FIELDS.forEach(function(f){NAME[f[0]]=f[1]});
+function pics(w){return w[6]?[].concat(w[6]):[]}
 function has(w,f){return f=="all"||(" "+w+" ").indexOf(" "+f+" ")>-1}
+function tile(src,alt){return'<a class="zoom" href="'+R+src+'"><img src="'+R+src+'" alt="'+esc(alt)+'" loading="lazy" decoding="async"></a>'}
+
+/* Showcase blocks. Three pictures sit side by side; otherwise the first is large and the rest form a strip under it. */
+var show=$("show");
 WORK.forEach(function(w){
-  var d=document.createElement("details");d.className="row";d.dataset.d=w[1];
+  var p=pics(w),h;if(!p.length)return;
+  if(p.length==3)h='<div class="strip">'+p.map(function(s,i){return tile(s,w[0]+", view "+(i+1))}).join("")+"</div>";
+  else{h=tile(p[0],w[0]);if(p.length>1)h+='<div class="strip">'+p.slice(1).map(function(s,i){return tile(s,w[0]+", example "+(i+1))}).join("")+"</div>"}
+  var a=document.createElement("article");a.className="show";
+  a.innerHTML='<figure class="plate" data-tag="'+esc(NAME[w[1].split(" ")[0]].toLowerCase())+'">'+h+"</figure>"+
+    '<div class="copy"><p class="from">'+esc(SRC[w[2]])+"</p><h3>"+esc(w[0])+'</h3><p class="key">'+esc(w[3])+"</p><p>"+esc(w[4])+'</p><p class="with">Built with '+esc(w[5])+".</p>"+
+    (w[7]?'<p class="with"><a href="'+G+w[7]+'" rel="noopener">View the code on GitHub</a></p>':"")+"</div>";
+  show.appendChild(a);
+});
+/* A picture that fails to load is removed, and a block with no pictures left goes with it. */
+show.addEventListener("error",function(e){
+  var t=e.target;if(t.tagName!="IMG")return;
+  var art=t.closest(".show"),link=t.closest("a");if(link)link.remove();
+  if(art&&!art.querySelector("img"))art.remove();
+},true);
+
+/* Full list with field filters and search */
+var list=$("list"),tools=$("filters"),q=$("q"),count=$("count"),cur="all";
+WORK.forEach(function(w){
+  var p=pics(w),d=document.createElement("details");d.className="row";d.dataset.d=w[1];
   d.dataset.t=(w[0]+" "+w[3]+" "+w[4]+" "+w[5]+" "+SRC[w[2]]).toLowerCase();
-  d.innerHTML='<summary><h3>'+esc(w[0])+'</h3><span class="fig">'+esc(w[3])+'</span><span class="ctx">'+esc(SRC[w[2]])+'</span></summary>'+
+  d.innerHTML='<summary><h3>'+esc(w[0])+'</h3><span class="fig">'+esc(w[3])+'</span><span class="ctx">'+esc(SRC[w[2]])+(p.length?", with pictures":"")+'</span></summary>'+
     '<div class="more"><div><p>'+esc(w[4])+'</p><p class="with">Built with '+esc(w[5])+'.</p>'+
     (w[7]?'<p class="with"><a href="'+G+w[7]+'" rel="noopener">View the code on GitHub</a></p>':'')+'</div>'+
-    (w[6]?'<figure class="plate"><img alt="'+esc(w[0])+'" data-src="'+R+w[6]+'"><figcaption></figcaption></figure>':'')+'</div>';
+    (p.length?'<a class="zoom" href="'+R+p[0]+'"><img alt="'+esc(w[0])+'" data-src="'+R+p[0]+'"></a>':'')+'</div>';
   d.addEventListener("toggle",function(){var i=d.querySelector("img[data-src]");if(d.open&&i){i.src=i.dataset.src;i.removeAttribute("data-src")}});
   list.appendChild(d);
 });
@@ -379,8 +450,42 @@ FIELDS.forEach(function(f){
 });
 q.addEventListener("input",apply);apply();
 
+/* ---------- Photos from conferences and labs ----------
+   Each row: [file name in the root of the Vison_advanced repository, caption, description for screen readers].
+   A photo that is not in the repository yet is skipped, and the section stays hidden until one loads. */
+var PH=R+"Vison_advanced/refs/heads/main/";
+var PHOTOS=[
+["keiser-ai-lab.jpg","AI Lab launch at Keiser University","A large group of students and staff in front of two screens that read AI Lab"],
+["vurvey-ai-labs.jpg","Vurvey AI Labs, University of South Carolina","A team working at a table in front of a wall of analytics screens"],
+["poster-session.jpg","Poster session: Towards Human Motion World Models via Executable Behaviour Representations","A researcher standing beside a conference poster"],
+["ubc-robson-square.jpg","UBC Robson Square, Vancouver","The University of British Columbia sign at 800 Robson Street"],
+["eccv-stage.jpg","ECCV, main stage","A speaker on stage at the European Conference on Computer Vision"]
+];
+var gal=$("gal");
+PHOTOS.forEach(function(p){
+  var f=document.createElement("figure");f.className="shot";f.hidden=true;
+  f.innerHTML='<a class="zoom" href="'+PH+p[0]+'"><img alt="'+esc(p[2])+'" decoding="async"></a><figcaption>'+esc(p[1])+"</figcaption>";
+  var im=f.querySelector("img");
+  im.onload=function(){f.hidden=false;$("photos").hidden=false;$("nav-photos").hidden=false};
+  im.onerror=function(){f.remove()};
+  gal.appendChild(f);im.src=PH+p[0];
+});
+
+/* ---------- Enlarged picture ---------- */
+var dlg=$("zoom"),dimg=dlg.querySelector("img");
+document.addEventListener("click",function(e){
+  var a=e.target.closest?e.target.closest("a.zoom"):null;
+  if(a&&dlg.showModal){e.preventDefault();var i=a.querySelector("img");dimg.alt=i?i.alt:"";dimg.src=a.href;dlg.showModal()}
+  else if(e.target==dlg)dlg.close();
+});
+
+/* ---------- Tool chips ---------- */
+[].forEach.call(document.querySelectorAll(".kit dd"),function(d){
+  d.innerHTML=d.textContent.split(",").map(function(s){return"<span>"+esc(s.trim())+"</span>"}).join("");
+});
+
 /* ---------- Certificates ---------- */
-var CU="https://www.coursera.org/account/accomplishments/",certs=document.getElementById("certs");
+var CU="https://www.coursera.org/account/accomplishments/",certs=$("certs");
 [["Stanford University: AI in healthcare",[["AI in Healthcare Specialization","specialization/R9C9W2YRK1WZ"],["Introduction to Healthcare","verify/MV4UYUOWYGTJ"],["Introduction to Clinical Data","verify/85BXCOE7ZWDI"],["Fundamentals of Machine Learning for Healthcare","verify/B1X7ZRZ7U7WY"],["Evaluations of AI Applications in Healthcare","verify/ZWEPEAF5WLJA"],["AI in Healthcare Capstone","verify/DN9UR5QS0Y3L"]]],
  ["Yale University: health and medical software",[["Introduction to Medical Software","verify/64MM329IZ0NC"],["Essentials of Global Health","verify/VDZZUE7065VT"],["Breast Cancer","verify/DHYV19S7M35S"]]],
  ["DeepLearning.AI and Stanford Online: machine learning",[["Machine Learning Specialization","specialization/9YTCR5C6A57W"],["Supervised Machine Learning: Regression and Classification","verify/U2S4BSCSTHK1"],["Advanced Learning Algorithms","verify/H6OQV45C7N37"],["Unsupervised Learning, Recommenders, Reinforcement Learning","verify/BYE5I5GSW96I"]]],
@@ -392,18 +497,18 @@ var CU="https://www.coursera.org/account/accomplishments/",certs=document.getEle
 });
 
 /* ---------- Hero scene: a toy tracker, drawn differently in each sensor view ---------- */
-var cv=document.getElementById("scene"),cx=cv.getContext("2d"),VW=0,VH=0,objs=[],P={},raf=0,seen=true,KIND=["person","vehicle","animal"];
-function pal(){var s=getComputedStyle(root);function v(n){return s.getPropertyValue(n).trim()}return{bg:v("--panel"),ink:v("--ink"),ac:v("--accent")}}
+var cv=$("scene"),cx=cv.getContext("2d"),VW=0,VH=0,objs=[],P={},raf=0,seen=true,KIND=["person","vehicle","idea"];
+function pal(){var s=getComputedStyle(root);function v(n){return s.getPropertyValue(n).trim()}return{bg:v("--s-bg"),ink:v("--s-ink"),ac:v("--s-ac")}}
 function size(){var r=cv.getBoundingClientRect(),d=Math.min(window.devicePixelRatio||1,2);VW=r.width;VH=r.height;cv.width=VW*d;cv.height=VH*d;cx.setTransform(d,0,0,d,0,0)}
 function seed(){
   objs=[];
   for(var i=0,n=VW<700?5:9;i<n;i++){
-    var k=i%3,s=34+Math.random()*38,w=k==0?s*.5:k==1?s*1.7:s*1.15,h=k==0?s*1.3:s*.7;
+    var k=i%3,s=34+Math.random()*38,w=k==0?s*.5:k==1?s*1.7:s*.8,h=k==0?s*1.3:k==1?s*.7:s;
     objs.push({id:i+1,k:k,w:w,h:h,x:w/2+Math.random()*Math.max(1,VW-w),y:h/2+26+Math.random()*Math.max(1,VH-h-26),vx:(Math.random()-.5)*(k==1?1.2:.6),vy:(Math.random()-.5)*.35,c:.86+Math.random()*.13,t:[]});
   }
 }
 function draw(){
-  var b=root.dataset.band;cx.clearRect(0,0,VW,VH);
+  var b=root.dataset.band,ph=Date.now()/450;cx.clearRect(0,0,VW,VH);
   objs.forEach(function(o){
     if(!still){
       o.x+=o.vx;o.y+=o.vy;
@@ -412,7 +517,7 @@ function draw(){
       o.t.push([o.x,o.y]);if(o.t.length>80)o.t.shift();
       if(Math.random()<.02)o.c=Math.max(.8,Math.min(.99,o.c+(Math.random()-.5)*.05));
     }
-    var x=o.x-o.w/2,y=o.y-o.h/2;
+    var x=o.x-o.w/2,y=o.y-o.h/2,bulbY=o.y-o.h*.02,rb=o.w*.3,k;
     cx.globalAlpha=.4;cx.strokeStyle=P.ac;cx.lineWidth=1.5;cx.beginPath();
     o.t.forEach(function(p,i){i?cx.lineTo(p[0],p[1]):cx.moveTo(p[0],p[1])});cx.stroke();
     if(b=="thermal"){
@@ -421,28 +526,123 @@ function draw(){
       cx.globalAlpha=1;cx.fillStyle=g;cx.beginPath();cx.arc(o.x,o.y,r,0,7);cx.fill();
     }else{
       cx.globalAlpha=b=="xray"?.22:b=="infrared"?.45:.18;cx.fillStyle=b=="infrared"?P.ac:P.ink;cx.beginPath();
-      if(o.k==2)cx.ellipse(o.x,o.y,o.w/2,o.h/2,0,0,7);else cx.rect(x,y,o.w,o.h);
+      /* an idea is drawn as a light bulb: a round head on a short base */
+      if(o.k==2){cx.arc(o.x,bulbY,rb,0,7);cx.rect(o.x-rb*.5,o.y+o.h*.2,rb,o.h*.2)}else cx.rect(x,y,o.w,o.h);
       cx.fill();
       if(b=="xray"){cx.beginPath();cx.ellipse(o.x,o.y,o.w*.3,o.h*.3,0,0,7);cx.fill()}
     }
+    if(o.k==2){ /* three rays above the bulb that pulse */
+      cx.globalAlpha=still?.6:.4+.3*Math.sin(ph+o.id);cx.lineWidth=2;cx.beginPath();
+      for(k=-1;k<2;k++){var a=k*.6-Math.PI/2,ac=Math.cos(a),as=Math.sin(a);cx.moveTo(o.x+ac*o.w*.38,bulbY+as*o.w*.38);cx.lineTo(o.x+ac*o.w*.5,bulbY+as*o.w*.5)}
+      cx.stroke();
+    }
     cx.globalAlpha=1;cx.lineWidth=2;cx.setLineDash(b=="xray"?[6,4]:[]);cx.strokeRect(x-4,y-4,o.w+8,o.h+8);cx.setLineDash([]);
-    var s=KIND[o.k]+" "+o.id+"  "+o.c.toFixed(2);cx.font="600 12px Archivo,Arial,sans-serif";
-    cx.fillStyle=P.ac;cx.fillRect(x-5,y-23,cx.measureText(s).width+12,19);cx.fillStyle=P.bg;cx.fillText(s,x+1,y-9);
+    var lab=KIND[o.k]+" "+o.id+"  "+o.c.toFixed(2);cx.font="600 12px Archivo,Arial,sans-serif";
+    cx.fillStyle=P.ac;cx.fillRect(x-5,y-23,cx.measureText(lab).width+12,19);cx.fillStyle=P.bg;cx.fillText(lab,x+1,y-9);
   });
 }
 function loop(){draw();raf=requestAnimationFrame(loop)}
 function play(){if(!raf&&!still&&seen&&!document.hidden)raf=requestAnimationFrame(loop)}
 function pause(){cancelAnimationFrame(raf);raf=0}
 if("IntersectionObserver" in window)new IntersectionObserver(function(e){seen=e[0].isIntersecting;if(seen)play();else pause()}).observe(cv);
-document.addEventListener("visibilitychange",function(){if(document.hidden)pause();else play()});
-addEventListener("resize",function(){var w=VW;size();if(Math.abs(VW-w)>1)seed();if(!raf)draw()});
-size();seed();
+
+/* ---------- Depth field: the 3D point cloud behind the page ----------
+   A rolling terrain is sampled on a grid, moved toward the camera and projected with perspective.
+   Height picks the colour from the current sensor view's colour map. A scan line sweeps away from
+   the camera, and a few wireframe boxes ride the terrain like 3D detections.
+   To make it calmer or stronger, change the opacity of #depth in the CSS. */
+var bg=$("depth"),gx=bg.getContext("2d"),DW=0,DH=0,F=1,KX=1,draf=0,T0=0,prev=0,lag=0,coarse=1,scr=0,yaw=0,aim=0,sa=0,ca=1,sp=0,cp=1,mid=0,LUT=[],NL=22;
+var PITCH=.22,ZN=1,ZF=44,DZ=.66,DX=.62,CAMY=3.6,Q=[0,0],C8=[],EDGE=[0,1,2,3,4,5,6,7,0,2,1,3,4,6,5,7,0,4,1,5,2,6,3,7];
+var MAPS={visible:["16388F","2F6BFF","86B8FF","F1F7FF"],thermal:["4A1486","A52C7A","E0533A","F98E09","FCFFA4"],infrared:["0B4A5E","2AA7BD","C2183A","FF5C7A","FFE1DC"],xray:["1B3640","3E6470","8FB9C6","E8F6FA"]};
+/* boxes: [x, starting depth, width, height, depth, how fast it approaches (0 to 1)] */
+var BOX=[[-4.2,8,1.5,1.2,2.6,.45],[3.6,19,1.1,2,1.1,.2],[-1.4,30,1.8,1.3,3.4,.6],[6.2,39,1.3,1.3,1.3,.32]];
+var SKY=[];for(var si=0;si<70;si++)SKY.push((Math.random()-.5)*150,8+Math.random()*32,58+Math.random()*30);
+
+function ramp(stops,n){
+  var out=[],m=stops.length-1;
+  for(var i=0;i<n;i++){
+    var u=i/(n-1)*m,k=Math.min(m-1,Math.floor(u)),v=u-k,a=parseInt(stops[k],16),b=parseInt(stops[k+1],16);
+    out.push("rgb("+Math.round((a>>16)+((b>>16)-(a>>16))*v)+","+Math.round((a>>8&255)+((b>>8&255)-(a>>8&255))*v)+","+Math.round((a&255)+((b&255)-(a&255))*v)+")");
+  }
+  return out;
+}
+/* terrain height: rolling waves in a valley whose sides rise into ridges */
+function hgt(x,z){var r=x*x*.012;return Math.sin(x*.21+z*.13)*Math.cos(z*.17-x*.05)*1.05+Math.sin(x*.47-z*.31)*.5+Math.sin(x*.93+z*.71)*.22+(r>5.2?5.2:r)-1.1}
+/* project a world point to the screen; writes x,y into o[n],o[n+1] and returns its depth */
+function pj(x,y,z,o,n){var yy=y-CAMY,xr=x*ca-z*sa,zr=x*sa+z*ca,zc=zr*cp-yy*sp;o[n]=DW*.5+F*xr/zc;o[n+1]=mid-F*(yy*cp+zr*sp)/zc;return zc}
+function bsize(){
+  var d=Math.min(window.devicePixelRatio||1,1.5);DW=window.innerWidth;DH=window.innerHeight;
+  bg.width=Math.round(DW*d);bg.height=Math.round(DH*d);gx.setTransform(d,0,0,d,0,0);
+  F=Math.max(DH*.95,DW*.5);KX=(DW*.5+40)/F+.3;
+}
+function render(t){
+  sa=Math.sin(yaw);ca=Math.cos(yaw);sp=Math.sin(PITCH);cp=Math.cos(PITCH);mid=DH*.5;
+  var hw=DW*.5,gt=mid-F*sp/cp-DH*.24,gr=gx.createLinearGradient(0,gt,0,gt+DH*.34),i;
+  gx.clearRect(0,0,DW,DH);
+  /* haze along the horizon */
+  gr.addColorStop(0,"rgba(0,0,0,0)");gr.addColorStop(.7,LUT[NL>>1]);gr.addColorStop(1,"rgba(0,0,0,0)");
+  gx.globalAlpha=.14;gx.fillStyle=gr;gx.fillRect(0,gt,DW,DH*.34);
+  /* far points above the ridges */
+  gx.fillStyle=LUT[NL-3];
+  for(i=0;i<SKY.length;i+=3)if(pj(SKY[i],SKY[i+1],SKY[i+2],Q,0)>1){gx.globalAlpha=.22+.14*Math.sin(t*.7+i);gx.fillRect(Q[0],Q[1],1.5,1.5)}
+  /* terrain, far rows first */
+  var travel=t*.5+scr*.005,base=Math.floor(travel/DZ),phase=travel-base*DZ,rows=Math.round((ZF-ZN)/DZ),scan=ZN-4+((t*.09)%1)*(ZF-ZN+12),lastc=-1;
+  for(var j=rows;j>0;j--){
+    if(coarse>1&&(j+base)%coarse)continue;
+    var z=ZN+j*DZ-phase,zt=z+travel,fade=Math.min(1,(ZF-z)/14)*Math.min(1,(z-ZN)/3);
+    if(fade<=0)continue;
+    var gl=1-Math.abs(z-scan)/2.4,im=Math.ceil((z*KX+3)/DX);
+    if(gl<0)gl=0;
+    for(var n=-im;n<=im;n++){
+      if(coarse>1&&n%coarse)continue;
+      var x=n*DX,h=hgt(x,zt),y=h-CAMY,xr=x*ca-z*sa,zr=x*sa+z*ca,zc=zr*cp-y*sp;
+      if(zc<.4)continue;
+      var px=hw+F*xr/zc,py=mid-F*(y*cp+zr*sp)/zc;
+      if(px<-4||px>DW+4||py<-4||py>DH+4)continue;
+      var s=F*.019/zc,ci=(h+2.9)/8.8*NL|0;
+      s=s<.9?.9:s>3?3:s;ci=ci<0?0:ci>=NL?NL-1:ci;
+      var al=fade*(.32+ci/NL*.5);al+=(fade-al)*gl;
+      if(gl>.72){ci=NL;s*=1.5}
+      if(ci!==lastc){gx.fillStyle=LUT[ci];lastc=ci}
+      gx.globalAlpha=al;gx.fillRect(px-s*.5,py-s*.5,s,s);
+    }
+  }
+  /* wireframe boxes */
+  gx.lineWidth=1.3;gx.strokeStyle=LUT[NL];
+  for(var q2=0;q2<BOX.length;q2++){
+    var B=BOX[q2],span=ZF-ZN,bz=ZN+((B[1]-travel*B[5])%span+span)%span,bx=B[0]+Math.sin(t*.17+q2*2)*1.2,by=hgt(bx,bz+travel),bf=Math.min(1,(ZF-bz)/14)*Math.min(1,(bz-ZN-2)/4),ok=bf>0;
+    for(var c=0;c<8&&ok;c++)ok=pj(bx+(c&1?B[2]:-B[2])*.5,by+(c&2?B[3]:0),bz+(c&4?B[4]:-B[4])*.5,C8,c*2)>.5;
+    if(!ok)continue;
+    var bl=1-Math.abs(bz-scan)/3;
+    gx.globalAlpha=bf*(.36+(bl>0?bl*.6:0));gx.beginPath();
+    for(var e=0;e<24;e+=2){gx.moveTo(C8[EDGE[e]*2],C8[EDGE[e]*2+1]);gx.lineTo(C8[EDGE[e+1]*2],C8[EDGE[e+1]*2+1])}
+    gx.stroke();
+  }
+  gx.globalAlpha=1;
+}
+function tick(ts){
+  draf=requestAnimationFrame(tick);
+  if(!T0)T0=ts;
+  var dt=ts-prev;prev=ts;
+  /* if the device keeps missing frames, draw every second row and column instead */
+  if(dt>34&&dt<250){if(++lag>50&&coarse<2){coarse=2;lag=0}}else if(lag>0)lag--;
+  scr+=(window.scrollY-scr)*.08;
+  yaw+=(aim*.2+Math.sin(ts/15000)*.05-yaw)*.04;
+  render(20+(ts-T0)/1000);
+}
+function go(){if(!draf&&!still&&!document.hidden)draf=requestAnimationFrame(tick)}
+function halt(){cancelAnimationFrame(draf);draf=0}
+addEventListener("pointermove",function(e){aim=e.clientX/(DW||1)-.5},{passive:true});
+document.addEventListener("visibilitychange",function(){if(document.hidden){pause();halt()}else{play();go()}});
+addEventListener("resize",function(){var w=VW;size();if(Math.abs(VW-w)>1)seed();if(!raf)draw();bsize();if(!draf)render(20)});
 
 /* ---------- Sensor views ---------- */
-var bb=[].slice.call(document.querySelectorAll(".bands button")),now=document.getElementById("now"),LABEL={visible:"visible light",thermal:"thermal infrared",infrared:"false-colour infrared",xray:"X-ray"};
+var bb=[].slice.call(document.querySelectorAll(".bands button")),now=$("now"),LABEL={visible:"visible light",thermal:"thermal infrared",infrared:"false-colour infrared",xray:"X-ray"};
 function view(b,keep){
   root.dataset.band=b;bb.forEach(function(x){x.setAttribute("aria-pressed",x.dataset.b==b)});
-  now.textContent=LABEL[b];P=pal();if(!raf)draw();
+  now.textContent=LABEL[b];P=pal();
+  LUT=ramp(MAPS[b],NL);LUT.push(getComputedStyle(root).getPropertyValue("--ink").trim()||"#fff");
+  if(!raf)draw();if(!draf)render(20);
   if(keep)try{localStorage.setItem("band",b)}catch(e){}
 }
 bb.forEach(function(x){x.addEventListener("click",function(){view(x.dataset.b,1)})});
@@ -450,11 +650,13 @@ addEventListener("keydown",function(e){
   if(/INPUT|TEXTAREA/.test(e.target.tagName)||e.ctrlKey||e.metaKey||e.altKey)return;
   var x=bb[+e.key-1];if(x)view(x.dataset.b,1);
 });
-view(LABEL[root.dataset.band]?root.dataset.band:"visible");play();
+size();seed();bsize();
+view(LABEL[root.dataset.band]?root.dataset.band:"visible");
+play();go();
 
 /* ---------- Live GitHub numbers (the line stays empty if the request fails) ---------- */
 if(window.fetch)fetch("https://api.github.com/users/AISoltani").then(function(r){return r.ok?r.json():0}).then(function(u){
-  if(u&&u.public_repos)document.getElementById("gh").textContent=" ("+u.public_repos+" repositories, "+Number(u.followers).toLocaleString("en")+" followers)";
+  if(u&&u.public_repos)$("gh").textContent=" ("+u.public_repos+" repositories, "+Number(u.followers).toLocaleString("en")+" followers)";
 }).catch(function(){});
 })();
 </script>
