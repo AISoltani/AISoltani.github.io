@@ -1,1385 +1,462 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" data-band="visible">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Amir Soltani — AI · Computer Vision · Deep Learning</title>
-<meta name="description" content="AI Engineer specializing in Computer Vision, Deep Learning, Medical AI, and Real-Time Perception Systems."/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Amir Soltani | Computer vision and machine learning engineer</title>
+<meta name="description" content="Amir Soltani is a senior computer vision and machine learning engineer working on medical imaging, satellite and thermal imagery, driver assistance and real-time edge AI, with recent work in vision-language models and LLMs.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aisoltani.github.io/">
+<meta property="og:title" content="Amir Soltani | Computer vision and machine learning engineer">
+<meta property="og:description" content="Vision systems that work outside the lab: medical imaging, satellite and thermal imagery, driver assistance and real-time edge AI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+<script>try{var b=localStorage.getItem("band");document.documentElement.dataset.band=/^(visible|thermal|infrared|xray)$/.test(b)?b:matchMedia("(prefers-color-scheme: dark)").matches?"thermal":"visible"}catch(e){}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Amir Soltani","jobTitle":"Senior Computer Vision and Machine Learning Engineer","url":"https://aisoltani.github.io/","email":"mailto:amirsoltani.os@gmail.com","alumniOf":[{"@type":"CollegeOrUniversity","name":"Amirkabir University of Technology"},{"@type":"CollegeOrUniversity","name":"Fasa University"}],"sameAs":["https://github.com/AISoltani","https://www.linkedin.com/in/amir-soltani-aisoltani/","https://www.kaggle.com/aisoltani","https://x.com/AISoltani"]}</script>
 <style>
-:root{
-  --bg:#04080f;
-  --bg2:#080e1a;
-  --bg3:#0d1525;
-  --cyan:#00d4ff;
-  --cyan2:#00a8cc;
-  --magenta:#ff2d78;
-  --violet:#7c3aed;
-  --gold:#f5b942;
-  --text:#e8edf5;
-  --muted:#6b7a99;
-  --border:rgba(0,212,255,0.12);
-  --card:rgba(13,21,37,0.8);
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--cyan) var(--bg);}
-::-webkit-scrollbar{width:6px;}
-::-webkit-scrollbar-track{background:var(--bg);}
-::-webkit-scrollbar-thumb{background:var(--cyan2);border-radius:3px;}
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:'DM Sans',sans-serif;
-  overflow-x:hidden;
-  line-height:1.6;
-}
+/* Four sensor views. Each one is a full palette. */
+:root{--bg:#DDE8F0;--panel:#CFDDE8;--ink:#0A1D37;--muted:#44566F;--accent:#1447E6;--mark:#FFD23F;--on-mark:#0A1D37;--line:rgba(10,29,55,.22);color-scheme:light}
+[data-band=thermal]{--bg:#150B33;--panel:#21104C;--ink:#FFF1BF;--muted:#D2B4D0;--accent:#FF8A1F;--mark:#FF8A1F;--on-mark:#150B33;--line:rgba(255,241,191,.24);color-scheme:dark}
+[data-band=infrared]{--bg:#B3122F;--panel:#980F27;--ink:#FFF4F0;--muted:#FFD3CE;--accent:#A5F2FF;--mark:#071A2E;--on-mark:#FFF4F0;--line:rgba(255,244,240,.34);color-scheme:dark}
+[data-band=xray]{--bg:#0C1418;--panel:#152229;--ink:#E4EEF2;--muted:#93AAB4;--accent:#A9E4F5;--mark:#E4EEF2;--on-mark:#0C1418;--line:rgba(228,238,242,.22);color-scheme:dark}
 
-/* ── CANVAS BACKGROUND ── */
-#neuralCanvas{
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  z-index:0;pointer-events:none;opacity:0.35;
-}
+*{box-sizing:border-box;margin:0}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:Archivo,"Helvetica Neue",Arial,sans-serif;font-size:1.0625rem;line-height:1.55;padding-bottom:6rem;transition:background-color .25s,color .25s;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration-color:var(--accent);text-decoration-thickness:.11em;text-underline-offset:.2em}
+a:hover{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.wrap{max-width:76rem;margin:0 auto;padding:0 clamp(1rem,4vw,3rem)}
 
-/* ── NAV ── */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  padding:0 5%;
-  height:64px;
-  display:flex;align-items:center;justify-content:space-between;
-  background:rgba(4,8,15,0.85);
-  backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);
-  transition:all 0.3s;
-}
-.nav-logo{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:1.6rem;
-  letter-spacing:0.12em;
-  background:linear-gradient(90deg,var(--cyan),var(--magenta));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.nav-links{display:flex;gap:2rem;list-style:none;}
-.nav-links a{
-  font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:600;
-  color:var(--muted);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase;
-  transition:color 0.2s;position:relative;
-}
-.nav-links a::after{
-  content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;
-  background:var(--cyan);transition:width 0.3s;
-}
-.nav-links a:hover{color:var(--cyan);}
-.nav-links a:hover::after{width:100%;}
-.nav-cta{
-  padding:8px 20px;border:1px solid var(--cyan);border-radius:4px;
-  color:var(--cyan)!important;font-family:'Syne',sans-serif;font-size:0.8rem!important;
-  font-weight:700!important;letter-spacing:0.08em;text-decoration:none;
-  transition:all 0.2s!important;background:transparent;
-}
-.nav-cta:hover{background:var(--cyan);color:var(--bg)!important;}
-.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:5px;}
-.hamburger span{width:24px;height:2px;background:var(--cyan);border-radius:2px;transition:all 0.3s;}
+.top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.4rem 1.5rem;padding:1.1rem 0}
+.top b{font-weight:700;font-stretch:115%}
+.top nav{display:flex;flex-wrap:wrap;gap:.3rem 1.4rem}
+.top nav a{text-decoration:none}
+.top nav a:hover{text-decoration:underline}
 
-/* ── HERO ── */
-#hero{
-  position:relative;z-index:1;
-  min-height:100vh;
-  display:flex;align-items:center;
-  padding:0 5%;
-  overflow:hidden;
-}
-.hero-content{max-width:780px;}
-.hero-tag{
-  display:inline-flex;align-items:center;gap:8px;
-  font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:600;
-  letter-spacing:0.2em;text-transform:uppercase;color:var(--cyan);
-  margin-bottom:1.5rem;
-  opacity:0;animation:fadeUp 0.6s 0.2s forwards;
-}
-.hero-tag::before{content:'';width:32px;height:1px;background:var(--cyan);}
-.hero-name{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(4rem,10vw,8.5rem);
-  line-height:0.92;
-  letter-spacing:0.02em;
-  color:#fff;
-  opacity:0;animation:fadeUp 0.7s 0.35s forwards;
-}
-.hero-name .accent{
-  background:linear-gradient(135deg,var(--cyan) 0%,var(--magenta) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.hero-tagline{
-  font-family:'Syne',sans-serif;font-size:clamp(1rem,2vw,1.25rem);font-weight:400;
-  color:var(--muted);margin-top:1.5rem;margin-bottom:2.5rem;
-  max-width:560px;line-height:1.7;
-  opacity:0;animation:fadeUp 0.7s 0.5s forwards;
-}
-.typewriter{color:var(--cyan);font-weight:600;}
-.hero-btns{
-  display:flex;gap:1rem;flex-wrap:wrap;
-  opacity:0;animation:fadeUp 0.7s 0.65s forwards;
-}
-.btn-primary{
-  padding:14px 32px;background:var(--cyan);color:var(--bg);
-  font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;
-  letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;
-  border:none;cursor:pointer;border-radius:4px;
-  transition:all 0.25s;
-}
-.btn-primary:hover{background:#fff;transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,212,255,0.3);}
-.btn-outline{
-  padding:14px 32px;background:transparent;color:var(--text);
-  font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;
-  letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;
-  border:1px solid rgba(255,255,255,0.15);cursor:pointer;border-radius:4px;
-  transition:all 0.25s;
-}
-.btn-outline:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-2px);}
-.hero-stats{
-  position:absolute;bottom:60px;right:5%;
-  display:flex;gap:3rem;
-  opacity:0;animation:fadeUp 0.7s 0.8s forwards;
-}
-.stat-item{text-align:center;}
-.stat-num{
-  font-family:'Bebas Neue',sans-serif;font-size:2.5rem;
-  background:linear-gradient(180deg,var(--cyan),var(--cyan2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.stat-label{font-size:0.72rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;}
-.hero-scroll-hint{
-  position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:8px;
-  color:var(--muted);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;
-  animation:bounce 2s infinite;
-}
-.scroll-line{width:1px;height:40px;background:linear-gradient(var(--cyan),transparent);}
+/* Hero: a tracked scene with the name as one more detection */
+.scene{position:relative;min-height:min(72vh,44rem);background:var(--panel);overflow:hidden;display:flex;align-items:flex-end;transition:background-color .25s}
+.scene canvas{position:absolute;inset:0;width:100%;height:100%}
+.name{position:relative;display:inline-block;margin:5rem clamp(.8rem,4vw,3rem) clamp(1rem,3.5vw,2.6rem);padding:.07em .09em .01em;font-weight:800;font-stretch:62%;font-size:clamp(4.6rem,19vw,17rem);line-height:.8;letter-spacing:-.012em;text-transform:uppercase;animation:focus .9s cubic-bezier(.2,.7,.2,1) both}
+.name::before{content:"";position:absolute;inset:0;border:3px solid var(--accent);animation:lock .8s .55s steps(5) both}
+.name::after{content:attr(data-tag);position:absolute;left:-3px;bottom:100%;background:var(--accent);color:var(--panel);font-size:.95rem;font-weight:600;font-stretch:100%;line-height:1;letter-spacing:0;text-transform:none;padding:.4em .6em;white-space:nowrap;animation:lock .8s .55s steps(5) both}
+@keyframes focus{from{filter:blur(16px);opacity:.3}to{filter:blur(0);opacity:1}}
+@keyframes lock{0%{opacity:0;transform:translate(14px,-10px) scale(1.1)}40%{opacity:1;transform:translate(-7px,6px) scale(.97)}75%{opacity:1;transform:translate(3px,-2px) scale(1.01)}100%{opacity:1;transform:none}}
 
-/* ── SECTIONS ── */
-section{position:relative;z-index:1;padding:100px 5%;}
-.section-label{
-  font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:700;
-  letter-spacing:0.25em;text-transform:uppercase;color:var(--cyan);
-  display:flex;align-items:center;gap:12px;margin-bottom:1rem;
-}
-.section-label::before{content:'';width:24px;height:1px;background:var(--cyan);}
-.section-title{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(2.5rem,5vw,4rem);
-  letter-spacing:0.04em;line-height:1;
-  margin-bottom:0.5rem;
-}
-.section-sub{color:var(--muted);max-width:600px;margin-bottom:3rem;font-size:0.95rem;}
+.intro{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:clamp(1.5rem,5vw,4.5rem);padding:clamp(2rem,6vw,4.5rem) 0 clamp(1rem,3vw,2rem)}
+.lede{font-size:clamp(1.4rem,2.7vw,2.15rem);line-height:1.2;font-weight:500;max-width:25em}
+.side{color:var(--muted);max-width:36em}
+.side p+p{margin-top:1rem}
+.side strong{color:var(--ink);font-weight:650}
+.acts{display:flex;flex-wrap:wrap;align-items:center;gap:1rem 1.4rem;margin-top:1.6rem}
+.btn{display:inline-block;background:var(--ink);color:var(--bg);font-weight:650;font-stretch:108%;text-decoration:none;padding:.8em 1.25em}
+.btn:hover{background:var(--accent);color:var(--bg)}
 
-/* ── ABOUT ── */
-#about{background:var(--bg2);}
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;}
-.about-img-wrap{position:relative;}
-.about-img-frame{
-  width:100%;aspect-ratio:1;
-  background:linear-gradient(135deg,var(--bg3) 0%,rgba(0,212,255,0.05) 100%);
-  border:1px solid var(--border);border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:6rem;position:relative;overflow:hidden;
-}
-.about-img-frame::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(45deg,transparent 40%,rgba(0,212,255,0.05) 100%);
-}
-.avatar-placeholder{font-size:8rem;filter:drop-shadow(0 0 40px rgba(0,212,255,0.3));}
-.corner-decor{
-  position:absolute;width:30px;height:30px;
-  border-color:var(--cyan);border-style:solid;border-width:0;
-}
-.corner-decor.tl{top:-1px;left:-1px;border-top-width:2px;border-left-width:2px;}
-.corner-decor.tr{top:-1px;right:-1px;border-top-width:2px;border-right-width:2px;}
-.corner-decor.bl{bottom:-1px;left:-1px;border-bottom-width:2px;border-left-width:2px;}
-.corner-decor.br{bottom:-1px;right:-1px;border-bottom-width:2px;border-right-width:2px;}
-.floating-badge{
-  position:absolute;
-  background:var(--bg);border:1px solid var(--border);border-radius:8px;
-  padding:10px 14px;backdrop-filter:blur(10px);
-  font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:600;
-  display:flex;align-items:center;gap:8px;
-}
-.floating-badge.b1{bottom:-20px;right:-20px;}
-.floating-badge.b2{top:-20px;left:-20px;}
-.badge-dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite;}
-.about-text p{color:var(--muted);margin-bottom:1.2rem;font-size:0.98rem;line-height:1.8;}
-.about-highlights{
-  display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem;
-}
-.highlight-card{
-  padding:16px;background:var(--card);border:1px solid var(--border);border-radius:8px;
-  backdrop-filter:blur(10px);transition:border-color 0.3s;
-}
-.highlight-card:hover{border-color:var(--cyan);}
-.highlight-icon{font-size:1.5rem;margin-bottom:8px;}
-.highlight-label{font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:700;color:var(--cyan);letter-spacing:0.05em;margin-bottom:4px;}
-.highlight-val{font-size:0.85rem;color:var(--muted);}
+section{padding:clamp(2.8rem,7vw,5.5rem) 0 0}
+h2{font-size:clamp(2rem,4.6vw,3.3rem);line-height:1.04;font-weight:650;font-stretch:118%;letter-spacing:-.015em}
+.sub{color:var(--muted);max-width:38em;margin-top:.7rem}
 
-/* ── SKILLS ── */
-#skills{background:var(--bg);}
-.skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;}
-.skill-group{
-  background:var(--card);border:1px solid var(--border);border-radius:10px;
-  padding:24px;backdrop-filter:blur(10px);
-  transition:transform 0.3s,border-color 0.3s;
-}
-.skill-group:hover{transform:translateY(-4px);border-color:rgba(0,212,255,0.3);}
-.skill-group-header{
-  display:flex;align-items:center;gap:12px;margin-bottom:1.2rem;
-}
-.skill-group-icon{font-size:1.6rem;}
-.skill-group-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.05em;}
-.tag-list{display:flex;flex-wrap:wrap;gap:8px;}
-.tag{
-  padding:5px 12px;border-radius:20px;font-size:0.74rem;font-weight:500;
-  border:1px solid;transition:all 0.2s;cursor:default;
-}
-.tag-cyan{border-color:rgba(0,212,255,0.3);color:var(--cyan);background:rgba(0,212,255,0.05);}
-.tag-cyan:hover{background:rgba(0,212,255,0.12);}
-.tag-magenta{border-color:rgba(255,45,120,0.3);color:var(--magenta);background:rgba(255,45,120,0.05);}
-.tag-violet{border-color:rgba(124,58,237,0.3);color:#a78bfa;background:rgba(124,58,237,0.05);}
-.tag-gold{border-color:rgba(245,185,66,0.3);color:var(--gold);background:rgba(245,185,66,0.05);}
+/* Shared row pattern for the timeline and the project list */
+.track,.row{border-top:1px solid var(--line)}
+summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.15rem 1.5rem;padding:.9rem 0}
+summary::-webkit-details-marker{display:none}
+summary h3{font-size:1.14rem;font-weight:620;font-stretch:108%}
+summary:hover h3,[open]>summary h3{color:var(--accent)}
+.fig{font-weight:650;font-variant-numeric:tabular-nums;text-align:right;max-width:17rem}
+.ctx{grid-column:1/-1;color:var(--muted);font-size:.94rem}
+.with{color:var(--muted);font-size:.94rem;max-width:44em;margin-top:.6rem}
 
-/* ── PROJECTS ── */
-#projects{background:var(--bg2);}
-.filter-tabs{
-  display:flex;flex-wrap:wrap;gap:0.75rem;margin-bottom:3rem;
-}
-.filter-btn{
-  padding:8px 20px;border-radius:20px;font-family:'Syne',sans-serif;font-size:0.78rem;
-  font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:all 0.2s;
-  border:1px solid var(--border);background:transparent;color:var(--muted);
-}
-.filter-btn.active,.filter-btn:hover{
-  background:var(--cyan);color:var(--bg);border-color:var(--cyan);
-}
-.projects-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem;
-}
-.project-card{
-  background:var(--card);border:1px solid var(--border);border-radius:12px;
-  padding:28px;backdrop-filter:blur(10px);
-  transition:all 0.35s;position:relative;overflow:hidden;
-}
-.project-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--cyan),var(--magenta));
-  transform:scaleX(0);transition:transform 0.35s;transform-origin:left;
-}
-.project-card:hover{transform:translateY(-6px);border-color:rgba(0,212,255,0.3);box-shadow:0 20px 60px rgba(0,0,0,0.5);}
-.project-card:hover::before{transform:scaleX(1);}
-.project-cat{
-  font-family:'Syne',sans-serif;font-size:0.68rem;font-weight:700;
-  letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;
-}
-.cat-medical{color:#34d399;}
-.cat-vision{color:var(--cyan);}
-.cat-satellite{color:var(--gold);}
-.cat-detection{color:var(--magenta);}
-.cat-edge{color:#a78bfa;}
-.cat-autonomous{color:#fb923c;}
-.cat-nlp{color:#f472b6;}
-.project-title{
-  font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;
-  color:#fff;margin-bottom:10px;line-height:1.4;
-}
-.project-desc{font-size:0.85rem;color:var(--muted);line-height:1.7;margin-bottom:1.2rem;}
-.project-metrics{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1.2rem;}
-.metric{
-  padding:4px 10px;border-radius:4px;background:rgba(0,212,255,0.08);
-  font-size:0.72rem;font-weight:600;color:var(--cyan);
-  font-family:'Syne',sans-serif;
-}
-.project-tags{display:flex;flex-wrap:wrap;gap:6px;}
-.ptag{
-  padding:3px 9px;border-radius:3px;font-size:0.68rem;
-  background:rgba(255,255,255,0.04);color:var(--muted);border:1px solid rgba(255,255,255,0.07);
-}
-.project-card .proj-link{
-  position:absolute;top:24px;right:24px;
-  width:32px;height:32px;border-radius:50%;
-  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
-  color:var(--muted);text-decoration:none;font-size:0.9rem;
-  transition:all 0.25s;
-}
-.project-card:hover .proj-link{border-color:var(--cyan);color:var(--cyan);transform:rotate(45deg);}
+.years{display:grid;grid-template-columns:repeat(11,1fr);margin-top:1.8rem;font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.bar{grid-column:1/-1;display:block;position:relative;height:.7rem;margin-top:.45rem;background:repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px calc(100%/11))}
+.bar i{position:absolute;top:0;bottom:0;left:calc(var(--s)/132*100%);width:calc((var(--e) - var(--s))/132*100%);background:var(--accent)}
+.study .bar i{background:repeating-linear-gradient(135deg,var(--muted) 0 3px,transparent 3px 7px)}
+.track ul{padding:0 0 .6rem 1.15rem;max-width:44em}
+.track li{margin:.35rem 0}
+.track .with{margin-top:0;padding-bottom:1.3rem}
 
-/* ── EXPERIENCE TIMELINE ── */
-#experience{background:var(--bg);}
-.timeline{position:relative;padding-left:40px;}
-.timeline::before{
-  content:'';position:absolute;left:8px;top:0;bottom:0;
-  width:1px;background:linear-gradient(var(--cyan),transparent);
-}
-.timeline-item{
-  position:relative;margin-bottom:3rem;
-  opacity:0;transform:translateX(-20px);transition:all 0.5s;
-}
-.timeline-item.visible{opacity:1;transform:translateX(0);}
-.timeline-dot{
-  position:absolute;left:-36px;top:6px;
-  width:14px;height:14px;border-radius:50%;
-  background:var(--bg);border:2px solid var(--cyan);
-}
-.timeline-dot::after{
-  content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:6px;height:6px;border-radius:50%;background:var(--cyan);
-}
-.timeline-year{
-  font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:700;
-  color:var(--cyan);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px;
-}
-.timeline-role{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:4px;}
-.timeline-org{font-size:0.88rem;color:var(--muted);margin-bottom:10px;}
-.timeline-desc{font-size:0.88rem;color:var(--muted);line-height:1.7;}
-.timeline-techs{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem .4rem;margin:1.8rem 0 .7rem}
+.tools button,.bands button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.tools button{padding:.35em .6em}
+.tools button[aria-pressed=true]{background:var(--mark);color:var(--on-mark);font-weight:650}
+.tools input{font:inherit;color:inherit;background:none;border:0;border-bottom:2px solid var(--ink);border-radius:0;padding:.35em .1em;width:min(100%,20rem);margin-left:auto}
+.tools input::placeholder{color:var(--muted);opacity:1}
+.count{color:var(--muted);font-size:.94rem;margin-bottom:.7rem}
+.more{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,24rem);gap:1rem 2rem;padding:0 0 1.5rem}
+.more p{max-width:40em}
+.plate img{display:block;width:100%;height:auto;background:var(--panel)}
+.plate figcaption{font-size:.82rem;color:var(--muted);margin-top:.35rem}
+html:not([data-band=visible]) .plate figcaption::after{content:"Recoloured by this page's sensor view. Switch to Visible to see the original image."}
+[data-band=thermal] .plate img{filter:url(#f-thermal)}
+[data-band=infrared] .plate img{filter:url(#f-cir)}
+[data-band=xray] .plate img{filter:grayscale(1) invert(1) contrast(1.15)}
 
-/* ── RESEARCH / PUBLICATIONS ── */
-#research{background:var(--bg2);}
-.research-grid{display:grid;gap:1.5rem;}
-.research-card{
-  background:var(--card);border:1px solid var(--border);border-radius:10px;
-  padding:24px 28px;backdrop-filter:blur(10px);
-  display:grid;grid-template-columns:auto 1fr auto;gap:1.5rem;align-items:center;
-  transition:all 0.3s;
-}
-.research-card:hover{border-color:rgba(0,212,255,0.25);transform:translateX(6px);}
-.research-num{
-  font-family:'Bebas Neue',sans-serif;font-size:2.5rem;
-  color:rgba(0,212,255,0.15);line-height:1;
-}
-.research-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:#fff;margin-bottom:6px;}
-.research-meta{font-size:0.82rem;color:var(--muted);}
-.research-badge{
-  padding:6px 14px;border-radius:20px;font-size:0.72rem;font-weight:700;
-  font-family:'Syne',sans-serif;letter-spacing:0.05em;white-space:nowrap;
-}
-.badge-pub{background:rgba(52,211,153,0.1);color:#34d399;border:1px solid rgba(52,211,153,0.2);}
-.badge-wip{background:rgba(245,185,66,0.1);color:var(--gold);border:1px solid rgba(245,185,66,0.2);}
+.kit{display:grid;grid-template-columns:minmax(9rem,15rem) minmax(0,1fr);gap:.9rem 2rem;margin-top:1.8rem;max-width:60rem}
+.kit dt{font-weight:650;font-stretch:110%}
+.creds{display:grid;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));gap:2rem 3rem;margin-top:1.8rem}
+.creds h3{font-size:1.05rem;font-weight:650;font-stretch:110%;margin-bottom:.4rem}
+.creds ul{list-style:none;padding:0}
+.creds li{margin:.4rem 0}
+.creds small{display:block;color:var(--muted);font-size:.9rem}
 
-/* ── GITHUB STATS ── */
-#github{background:var(--bg);}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-bottom:3rem;}
-.stats-card{
-  background:var(--card);border:1px solid var(--border);border-radius:10px;
-  padding:28px 24px;text-align:center;backdrop-filter:blur(10px);
-  transition:all 0.3s;
-}
-.stats-card:hover{border-color:var(--cyan);transform:translateY(-4px);}
-.stats-icon{font-size:2rem;margin-bottom:12px;}
-.stats-value{
-  font-family:'Bebas Neue',sans-serif;font-size:2.8rem;
-  background:linear-gradient(135deg,var(--cyan),var(--magenta));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.stats-lbl{font-size:0.8rem;color:var(--muted);margin-top:4px;letter-spacing:0.06em;}
-.github-img-row{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;
-  align-items:start;
-}
-.github-img-card{
-  background:var(--card);border:1px solid var(--border);border-radius:10px;
-  padding:20px;overflow:hidden;backdrop-filter:blur(10px);
-}
-.github-img-card img{width:100%;border-radius:6px;}
-.github-img-card h4{font-family:'Syne',sans-serif;font-size:0.8rem;color:var(--muted);margin-bottom:12px;letter-spacing:0.08em;text-transform:uppercase;}
+.mail{display:inline-block;margin:1.2rem 0 1rem;font-weight:800;font-stretch:62%;font-size:clamp(2rem,7.4vw,6rem);line-height:.95;text-transform:uppercase;text-decoration:none;overflow-wrap:anywhere}
+.links{display:flex;flex-wrap:wrap;gap:.4rem 1.5rem}
+footer{color:var(--muted);font-size:.9rem;padding:3rem 0 0}
 
-/* ── CONTACT ── */
-#contact{background:var(--bg2);}
-.contact-wrapper{
-  display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;
-}
-.contact-headline{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(2.5rem,5vw,4.5rem);
-  line-height:0.95;margin-bottom:1.5rem;
-}
-.contact-headline .line2{
-  background:linear-gradient(90deg,var(--cyan),var(--magenta));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.contact-blurb{color:var(--muted);font-size:0.95rem;line-height:1.8;margin-bottom:2rem;}
-.social-links{display:flex;flex-direction:column;gap:1rem;}
-.social-link{
-  display:flex;align-items:center;gap:1rem;padding:16px 20px;
-  background:var(--card);border:1px solid var(--border);border-radius:10px;
-  text-decoration:none;transition:all 0.3s;
-  backdrop-filter:blur(10px);
-}
-.social-link:hover{border-color:var(--cyan);transform:translateX(8px);}
-.social-link-icon{
-  width:42px;height:42px;border-radius:8px;
-  display:flex;align-items:center;justify-content:center;font-size:1.2rem;
-  flex-shrink:0;
-}
-.icon-github{background:rgba(255,255,255,0.05);}
-.icon-linkedin{background:rgba(0,119,181,0.15);}
-.icon-kaggle{background:rgba(32,180,232,0.12);}
-.icon-twitter{background:rgba(0,0,0,0.3);}
-.icon-email{background:rgba(234,67,53,0.12);}
-.social-link-info{flex:1;}
-.social-link-name{font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;color:#fff;}
-.social-link-handle{font-size:0.78rem;color:var(--muted);}
-.social-link-arrow{color:var(--muted);font-size:1rem;transition:all 0.3s;}
-.social-link:hover .social-link-arrow{color:var(--cyan);transform:translateX(4px);}
+/* Sensor switch */
+.bands{position:fixed;left:50%;bottom:.9rem;transform:translateX(-50%);z-index:5;display:flex;align-items:center;background:var(--ink);color:var(--bg);padding:.28rem;max-width:calc(100vw - 1rem);transition:background-color .25s,color .25s}
+.bands span{padding:0 .7rem 0 .55rem;font-size:.86rem;white-space:nowrap}
+.bands button{padding:.5em .8em;font-size:.95rem;font-weight:600;white-space:nowrap}
+.bands button[aria-pressed=true]{background:var(--bg);color:var(--ink)}
+.bands kbd{font:inherit;opacity:.65;margin-right:.4em}
 
-/* ── FOOTER ── */
-footer{
-  position:relative;z-index:1;
-  background:var(--bg);
-  padding:40px 5%;
-  display:flex;align-items:center;justify-content:space-between;
-  border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem;
-}
-.footer-logo{
-  font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.1em;
-  background:linear-gradient(90deg,var(--cyan),var(--magenta));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.footer-copy{font-size:0.78rem;color:var(--muted);}
-.footer-links{display:flex;gap:1.5rem;}
-.footer-links a{font-size:0.78rem;color:var(--muted);text-decoration:none;transition:color 0.2s;}
-.footer-links a:hover{color:var(--cyan);}
-
-/* ── ANIMATIONS ── */
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,212,255,0.4);}50%{box-shadow:0 0 0 8px rgba(0,212,255,0);}}
-@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(8px);}}
-@keyframes spin{to{transform:rotate(360deg);}}
-
-.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.6s,transform 0.6s;}
-.reveal.visible{opacity:1;transform:translateY(0);}
-
-/* ── GLITCH LINE ── */
-.glitch-divider{
-  width:100%;height:1px;
-  background:linear-gradient(90deg,transparent,var(--cyan),var(--magenta),transparent);
-  margin:0;position:relative;z-index:1;
-}
-
-/* ── RESPONSIVE ── */
-@media(max-width:900px){
-  .about-grid,.contact-wrapper{grid-template-columns:1fr;gap:2.5rem;}
-  .about-img-wrap{display:none;}
-  .hero-stats{position:static;margin-top:3rem;justify-content:flex-start;}
-  .research-card{grid-template-columns:1fr;gap:0.5rem;}
-  .research-num{font-size:1.5rem;display:none;}
-  .research-badge{justify-self:start;}
-  .nav-links{display:none;}
-  .hamburger{display:flex;}
-  .mobile-menu{
-    display:none;position:fixed;top:64px;left:0;right:0;
-    background:rgba(4,8,15,0.97);backdrop-filter:blur(20px);
-    padding:2rem 5%;z-index:99;flex-direction:column;gap:1.5rem;
-    border-bottom:1px solid var(--border);
-  }
-  .mobile-menu.open{display:flex;}
-  .mobile-menu a{font-family:'Syne',sans-serif;font-size:1rem;font-weight:600;color:var(--text);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase;}
-}
+@media(max-width:760px){.intro,.more,.kit{grid-template-columns:1fr}.kit{gap:.15rem}.kit dd{margin-bottom:.9rem}summary{grid-template-columns:1fr}.fig{text-align:left;max-width:none}.tools input{margin-left:0;width:100%}}
+@media(max-width:560px){.bands span,.bands kbd{display:none}.bands button{padding:.55em .6em;font-size:.88rem}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+@media print{.bands,.scene canvas,.tools{display:none}body{padding:0}}
 </style>
 </head>
 <body>
 
-<canvas id="neuralCanvas"></canvas>
+<!-- Colour maps used to re-render project images in the thermal and infrared views -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<filter id="f-thermal" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="table" tableValues="0 .16 .4 .74 .93 .98 .99"/><feFuncG type="table" tableValues="0 .04 .08 .22 .41 .71 1"/><feFuncB type="table" tableValues=".02 .33 .43 .33 .15 .1 .64"/></feComponentTransfer></filter>
+<filter id="f-cir" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 1 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 1 0"/></filter>
+</defs></svg>
 
-<!-- NAV -->
-<nav id="mainNav">
-  <div class="nav-logo">AISoltani</div>
-  <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#research">Research</a></li>
-    <li><a href="#github">Stats</a></li>
-    <li><a href="#contact" class="nav-cta">Contact</a></li>
-  </ul>
-  <div class="hamburger" onclick="toggleMenu()">
-    <span></span><span></span><span></span>
-  </div>
-</nav>
-<div class="mobile-menu" id="mobileMenu">
-  <a href="#about" onclick="toggleMenu()">About</a>
-  <a href="#skills" onclick="toggleMenu()">Skills</a>
-  <a href="#projects" onclick="toggleMenu()">Projects</a>
-  <a href="#research" onclick="toggleMenu()">Research</a>
-  <a href="#github" onclick="toggleMenu()">Stats</a>
-  <a href="#contact" onclick="toggleMenu()">Contact</a>
+<div class="wrap">
+<header class="top">
+  <b>Amir Soltani</b>
+  <nav aria-label="Sections"><a href="#experience">Experience</a><a href="#work">Work</a><a href="#tools">Tools</a><a href="#credentials">Credentials</a><a href="#contact">Contact</a></nav>
+</header>
+
+<main>
+<div class="scene">
+  <canvas id="scene" aria-hidden="true"></canvas>
+  <h1 class="name" data-tag="person 0.99">Amir<br>Soltani</h1>
 </div>
 
-<!-- HERO -->
-<section id="hero">
-  <div class="hero-content">
-    <div class="hero-tag">AI Engineer &amp; Computer Vision Researcher</div>
-    <h1 class="hero-name">
-      Amir<br/><span class="accent">Soltani</span>
-    </h1>
-    <p class="hero-tagline">
-      Building the future of <span class="typewriter" id="typewriter"></span><br/>
-      Deep Learning · Medical AI · Real-Time Vision Systems · Edge Deployment
-    </p>
-    <div class="hero-btns">
-      <a href="#projects" class="btn-primary">View Projects</a>
-      <a href="#contact" class="btn-outline">Get In Touch</a>
-    </div>
+<div class="intro">
+  <div>
+    <p class="lede">I build vision systems that have to work outside the lab: on a phone in a gym, on a drone above a fire line, on a Jetson in a truck cab, on a clinician's review screen.</p>
+    <div class="acts"><a class="btn" href="#work">See the work</a><a href="mailto:amirsoltani.os@gmail.com">amirsoltani.os@gmail.com</a></div>
   </div>
-  <div class="hero-stats">
-    <div class="stat-item">
-      <div class="stat-num">1.8K</div>
-      <div class="stat-label">GitHub Followers</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">84</div>
-      <div class="stat-label">Repositories</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">8+</div>
-      <div class="stat-label">Years Experience</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">80+</div>
-      <div class="stat-label">AI Projects</div>
-    </div>
+  <div class="side">
+    <p><strong>Senior computer vision and machine learning engineer.</strong> 10+ years across medical imaging, remote sensing, driver assistance and industrial monitoring, covering the whole model lifecycle from data and annotation to deployment. I am most useful where labels are scarce, objects are small and the answer is needed in milliseconds. Lately I have been connecting vision models to language: retrieval with CLIP, DINOv2 and SigLIP, text-guided annotation and LLM pipelines for clinical documents.</p>
+    <p>This page can be viewed the way my sensors see. You are looking at it in <strong id="now">visible light</strong>. Change it with the switch at the bottom of the screen, or press 1 to 4.</p>
   </div>
-  <div class="hero-scroll-hint">
-    <div class="scroll-line"></div>
-    scroll
-  </div>
+</div>
+
+<section id="experience">
+  <h2>Experience</h2>
+  <p class="sub">Six roles since 2016. Several were remote and part-time or project-based, so they ran side by side from 2022 to 2024. The bars show when. Select a role for details.</p>
+  <div class="years" aria-hidden="true"><span>2016</span><span>2017</span><span>2018</span><span>2019</span><span>2020</span><span>2021</span><span>2022</span><span>2023</span><span>2024</span><span>2025</span><span>2026</span></div>
+
+  <details class="track"><summary><h3>Computer Vision Researcher</h3><span class="fig">May 2025 to Oct 2026</span><span class="ctx">Nova Vision, Tallinn, Estonia. Remote, part-time.</span><span class="bar" style="--s:112;--e:130"><i></i></span></summary>
+    <ul>
+      <li>Built an early stroke-screening workflow that combines facial movement from video with voice features and ECG signals.</li>
+      <li>Modelled cardiovascular risk from clinical and genomic variables with a tabular Transformer and gated fusion.</li>
+      <li>Added CLIP, DINOv2 and SigLIP embeddings to clinical image retrieval, and evaluated Grounding DINO with SAM 3 for text-guided masks.</li>
+      <li>Built OCR and LLM pipelines that turn unstructured clinical documents into structured, searchable records, plus retrieval-backed assistants for summaries and domain questions.</li>
+    </ul>
+    <p class="with">Python, PyTorch, MONAI, OpenCV, Hugging Face Transformers, CLIP, DINOv2, SigLIP, Grounding DINO, SAM 2, SAM 3, FastAPI, MLflow, Docker</p>
+  </details>
+
+  <details class="track"><summary><h3>Computer Vision Engineer</h3><span class="fig">Jan 2023 to Feb 2025</span><span class="ctx">VRVis GmbH, Vienna, Austria. Remote, flexible schedule.</span><span class="bar" style="--s:84;--e:110"><i></i></span></summary>
+    <ul>
+      <li>Fine-tuned Prithvi-100M on Sentinel-2 time series to separate coniferous from broadleaf forest.</li>
+      <li>Built tiled detection for small plant species and used SAHI with horizontal and oriented boxes on large satellite scenes.</li>
+      <li>Built animal detection and counting for UAV imagery, later refining masks with YOLOv11-seg and SAM 2.</li>
+      <li>Built thermal drone models for early fire ignition and thin smoke, reducing false alarms by 23%.</li>
+      <li>Mentored junior ML engineers and coordinated delivery across the team.</li>
+    </ul>
+    <p class="with">Python, PyTorch, MMDetection, YOLOv8, SAHI, SAM 2, TorchGeo, Prithvi-100M, GDAL, Rasterio, GeoPandas, Docker</p>
+  </details>
+
+  <details class="track"><summary><h3>Head of ML &amp; Computer Vision</h3><span class="fig">Feb 2022 to Mar 2024</span><span class="ctx">Sculp AI, Texas, USA. Remote, full-time.</span><span class="bar" style="--s:73;--e:99"><i></i></span></summary>
+    <ul>
+      <li>Led development of AI Fitness Coach, which gives exercise-form feedback from real-time pose estimation.</li>
+      <li>Built joint-angle tracking and repetition counting for more than 40 exercises, with on-device inference under 30 ms.</li>
+      <li>Shipped PhysioTrack, a movement-analysis workflow for rehabilitation reviewed by licensed physiotherapists.</li>
+      <li>Developed muscle and fat segmentation (Dice 0.94 on the internal benchmark) and deployed a distilled MobileSAM-based model under 35 MB.</li>
+      <li>Coordinated a six-person data team on a dataset of more than 13,000 images.</li>
+    </ul>
+    <p class="with">Python, PyTorch, OpenCV, MediaPipe, ViTPose+, MobileSAM, ONNX Runtime, TensorRT, CVAT, Labelbox, FastAPI</p>
+  </details>
+
+  <details class="track"><summary><h3>Computer Vision Engineer</h3><span class="fig">Feb 2022 to Dec 2023</span><span class="ctx">SoftwareMotion, Suzhou, China. Remote, project-based.</span><span class="bar" style="--s:73;--e:96"><i></i></span></summary>
+    <ul>
+      <li>Built risk-aware multi-object tracking with collision-course estimation for ADAS warnings.</li>
+      <li>Built real-time driver monitoring: gaze, blink rate, head pose and seatbelt use.</li>
+      <li>Delivered a drowsiness model that runs under 15 ms on Jetson Orin Nano.</li>
+      <li>Prototyped bird's-eye-view fusion from several cameras with a lightweight LSS-style lifter.</li>
+    </ul>
+    <p class="with">Python, C++, PyTorch, OpenCV, YOLO, MediaPipe, DeepStream, TensorRT, ONNX Runtime, Jetson Orin</p>
+  </details>
+
+  <details class="track"><summary><h3>Computer Vision Researcher</h3><span class="fig">Sep 2020 to Dec 2021</span><span class="ctx">G42 Healthcare, Dubai, UAE. Remote, part-time.</span><span class="bar" style="--s:56;--e:72"><i></i></span></summary>
+    <ul>
+      <li>Built weakly supervised 3D detection and segmentation for MRI and CT volumes using pseudo-labels.</li>
+      <li>Developed a CNN-Transformer model for tooth detection in panoramic dental X-rays.</li>
+      <li>Deployed skin-lesion triage on Jetson Nano; INT8 inference ran up to four times faster than FP32.</li>
+      <li>Reduced compute for brain-tumour detection by about 35% with entropy-guided slice selection.</li>
+    </ul>
+    <p class="with">Python, PyTorch, MONAI, U-Net, CNN-Transformers, ONNX Runtime, INT8 quantization, Jetson Nano</p>
+  </details>
+
+  <details class="track study"><summary><h3>M.Sc. Computer Engineering, Artificial Intelligence</h3><span class="fig">Sep 2018 to Feb 2022</span><span class="ctx">Amirkabir University of Technology (Tehran Polytechnic). GPA 3.86 of 4.</span><span class="bar" style="--s:32;--e:74"><i></i></span></summary>
+    <p class="with">Thesis: Few-shot Cascade R-CNN for Human Forensic Age Estimation.</p>
+  </details>
+
+  <details class="track"><summary><h3>AI Computer Vision Developer</h3><span class="fig">Feb 2016 to Mar 2019</span><span class="ctx">AMA-CTRL, Shiraz, Iran. On-site.</span><span class="bar" style="--s:1;--e:39"><i></i></span></summary>
+    <ul>
+      <li>Developed a real-time odometer-reading system for industrial meter monitoring.</li>
+      <li>Built helmet detection with face recognition for site access, and pose checks for harness use and restricted zones.</li>
+      <li>Delivered real-time monitoring of workers and vehicles with tracking and heatmaps.</li>
+      <li>Automated blood-test report digitization with Tesseract OCR, reducing manual data entry by 70%.</li>
+    </ul>
+    <p class="with">Python, OpenCV, YOLO, TensorFlow, PyTorch, Tesseract OCR, Raspberry Pi, Jetson</p>
+  </details>
 </section>
 
-<div class="glitch-divider"></div>
-
-<!-- ABOUT -->
-<section id="about">
-  <div class="about-grid">
-    <div class="about-img-wrap">
-      <div class="about-img-frame">
-        <img src="https://avatars.githubusercontent.com/u/56760080?v=4" alt="Amir Soltani" style="width:100%;height:100%;object-fit:cover;border-radius:7px;"/>
-        <div class="corner-decor tl"></div>
-        <div class="corner-decor tr"></div>
-        <div class="corner-decor bl"></div>
-        <div class="corner-decor br"></div>
-      </div>
-      <div class="floating-badge b1">
-        <div class="badge-dot"></div>
-        <span>Available for Projects</span>
-      </div>
-      <div class="floating-badge b2">
-        🏆 <span>LPIC Certified · Linux</span>
-      </div>
-    </div>
-    <div class="about-text reveal">
-      <div class="section-label">About Me</div>
-      <h2 class="section-title">Passion Meets<br/>Precision</h2>
-      <p>I'm Amir Soltani an AI engineer with deep roots in computer vision, medical imaging, and real-time deep learning systems. With over 1.8K GitHub followers and 84+ repositories, I've built production-grade AI across healthcare, automotive, satellite imagery, and edge devices.</p>
-      <p>I specialize in pushing state-of-the-art beyond benchmarks: whether that's achieving 42mm MPJPE on Human3.6M with Transformer architectures, deploying tumor segmentation to hospitals with 0.92 DSC score, or running YOLO-class detection in under 30ms on embedded hardware.</p>
-      <p>My philosophy: <em style="color:var(--cyan)">Knowledge is not skill. Knowledge plus ten thousand hours is skill.</em></p>
-      <div class="about-highlights">
-        <div class="highlight-card">
-          <div class="highlight-icon">🏥</div>
-          <div class="highlight-label">Medical AI</div>
-          <div class="highlight-val">Deployed to 5 hospitals</div>
-        </div>
-        <div class="highlight-card">
-          <div class="highlight-icon">⚡</div>
-          <div class="highlight-label">Real-Time Vision</div>
-          <div class="highlight-val">&lt;30ms TensorRT latency</div>
-        </div>
-        <div class="highlight-card">
-          <div class="highlight-icon">🛰️</div>
-          <div class="highlight-label">Remote Sensing</div>
-          <div class="highlight-val">Sentinel &amp; Maxar datasets</div>
-        </div>
-        <div class="highlight-card">
-          <div class="highlight-icon">🎓</div>
-          <div class="highlight-label">Edge AI</div>
-          <div class="highlight-val">Raspberry Pi · Android · TFLite</div>
-        </div>
-      </div>
-    </div>
-  </div>
+<section id="work">
+  <h2>Work</h2>
+  <p class="sub">Client work, research and open-source projects. Pick a field, or type a word such as thermal, Jetson or RAG.</p>
+  <div class="tools" id="filters"><input id="q" type="search" placeholder="Search projects" aria-label="Search projects"></div>
+  <p class="count" id="count" aria-live="polite"></p>
+  <div id="list"><noscript><p>The project list needs JavaScript. The code is on <a href="https://github.com/AISoltani">GitHub</a>.</p></noscript></div>
 </section>
 
-<div class="glitch-divider"></div>
-
-<!-- SKILLS -->
-<section id="skills">
-  <div class="section-label reveal">Technical Arsenal</div>
-  <h2 class="section-title reveal">Skills &amp;<br/>Expertise</h2>
-  <p class="section-sub reveal">A comprehensive stack from research to production deployment across cloud, edge, and embedded platforms.</p>
-  <div class="skills-grid reveal">
-    <div class="skill-group">
-      <div class="skill-group-header">
-        <span class="skill-group-icon">🧠</span>
-        <span class="skill-group-title">Programming Languages</span>
-      </div>
-      <div class="tag-list">
-        <span class="tag tag-cyan">Python</span>
-        <span class="tag tag-cyan">C++</span>
-        <span class="tag tag-cyan">MATLAB</span>
-        <span class="tag tag-cyan">Kotlin</span>
-        <span class="tag tag-cyan">Bash/Shell</span>
-      </div>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-header">
-        <span class="skill-group-icon">🔥</span>
-        <span class="skill-group-title">Deep Learning Frameworks</span>
-      </div>
-      <div class="tag-list">
-        <span class="tag tag-magenta">PyTorch</span>
-        <span class="tag tag-magenta">TensorFlow</span>
-        <span class="tag tag-magenta">Keras</span>
-        <span class="tag tag-magenta">HuggingFace</span>
-        <span class="tag tag-magenta">MMDetection</span>
-        <span class="tag tag-magenta">MONAI</span>
-      </div>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-header">
-        <span class="skill-group-icon">👁️</span>
-        <span class="skill-group-title">Computer Vision</span>
-      </div>
-      <div class="tag-list">
-        <span class="tag tag-cyan">OpenCV</span>
-        <span class="tag tag-cyan">YOLO Variants</span>
-        <span class="tag tag-cyan">MediaPipe</span>
-        <span class="tag tag-cyan">Albumentations</span>
-        <span class="tag tag-cyan">Scikit-Image</span>
-        <span class="tag tag-cyan">TorchGeo</span>
-      </div>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-header">
-        <span class="skill-group-icon">⚡</span>
-        <span class="skill-group-title">Edge &amp; Deployment</span>
-      </div>
-      <div class="tag-list">
-        <span class="tag tag-gold">TensorRT</span>
-        <span class="tag tag-gold">TF Lite</span>
-        <span class="tag tag-gold">DeepStream</span>
-        <span class="tag tag-gold">ONNX</span>
-        <span class="tag tag-gold">Raspberry Pi</span>
-        <span class="tag tag-gold">Android/Kotlin</span>
-      </div>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-header">
-        <span class="skill-group-icon">🛠️</span>
-        <span class="skill-group-title">MLOps &amp; Tools</span>
-      </div>
-      <div class="tag-list">
-        <span class="tag tag-violet">Docker</span>
-        <span class="tag tag-violet">Git/GitHub/GitLab</span>
-        <span class="tag tag-violet">Azure</span>
-        <span class="tag tag-violet">AWS</span>
-        <span class="tag tag-violet">Comet ML</span>
-        <span class="tag tag-violet">Neptune</span>
-        <span class="tag tag-violet">Roboflow</span>
-        <span class="tag tag-violet">LabelBox</span>
-        <span class="tag tag-violet">CVAT</span>
-      </div>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-header">
-        <span class="skill-group-icon">🌍</span>
-        <span class="skill-group-title">Geo &amp; Autonomous</span>
-      </div>
-      <div class="tag-list">
-        <span class="tag tag-gold">GDAL</span>
-        <span class="tag tag-gold">Rasterio</span>
-        <span class="tag tag-gold">GeoPandas</span>
-        <span class="tag tag-gold">CARLA Simulator</span>
-        <span class="tag tag-gold">Openpilot</span>
-        <span class="tag tag-gold">SAM2</span>
-      </div>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-header">
-        <span class="skill-group-icon">🤖</span>
-        <span class="skill-group-title">AI/LLM &amp; Automation</span>
-      </div>
-      <div class="tag-list">
-        <span class="tag tag-magenta">LangChain</span>
-        <span class="tag tag-magenta">N8N</span>
-        <span class="tag tag-magenta">RAG Pipelines</span>
-        <span class="tag tag-magenta">Windsurf</span>
-        <span class="tag tag-magenta">Cursor</span>
-        <span class="tag tag-magenta">Claude</span>
-      </div>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-header">
-        <span class="skill-group-icon">🎯</span>
-        <span class="skill-group-title">Specializations</span>
-      </div>
-      <div class="tag-list">
-        <span class="tag tag-cyan">Object Detection</span>
-        <span class="tag tag-cyan">Instance Segmentation</span>
-        <span class="tag tag-cyan">Pose Estimation</span>
-        <span class="tag tag-cyan">Few-Shot Learning</span>
-        <span class="tag tag-cyan">Medical Imaging</span>
-        <span class="tag tag-cyan">Remote Sensing</span>
-        <span class="tag tag-cyan">VLMs</span>
-      </div>
-    </div>
-  </div>
+<section id="tools">
+  <h2>Tools</h2>
+  <dl class="kit">
+    <dt>Computer vision</dt><dd>Object detection, multi-object tracking, instance and semantic segmentation, pose estimation, OCR, 3D vision, small-object detection. OpenCV, MMDetection, MONAI, MediaPipe.</dd>
+    <dt>Deep learning</dt><dd>PyTorch, TensorFlow, Keras, scikit-learn, Transformers, U-Net, R-CNN family, YOLO, few-shot and weakly supervised learning, metric learning.</dd>
+    <dt>Foundation models and LLMs</dt><dd>CLIP, DINOv2, SigLIP, Grounding DINO, SAM 2 and SAM 3, Hugging Face Transformers, LangChain, LangGraph, LlamaIndex, RAG, PEFT and LoRA.</dd>
+    <dt>Deployment</dt><dd>ONNX Runtime, TensorRT, INT8 quantization, NVIDIA DeepStream, TensorFlow Lite, Docker, FastAPI, MLflow, Weights &amp; Biases, Comet, Neptune.</dd>
+    <dt>Geospatial and data</dt><dd>GDAL, Rasterio, GeoPandas, TorchGeo, SAHI, Sentinel Hub, Prithvi, Clay, CVAT, Labelbox, Roboflow.</dd>
+    <dt>Languages and platforms</dt><dd>Python, C++, TypeScript, SQL, Linux, AWS, Azure, NVIDIA Jetson, Raspberry Pi.</dd>
+  </dl>
 </section>
 
-<div class="glitch-divider"></div>
-
-<!-- PROJECTS -->
-<section id="projects">
-  <div class="section-label reveal">Portfolio</div>
-  <h2 class="section-title reveal">Featured<br/>Projects</h2>
-  <p class="section-sub reveal">Production-grade AI systems spanning medical imaging, autonomous vehicles, satellite analysis, and real-time edge deployment.</p>
-
-  <div class="filter-tabs reveal">
-    <button class="filter-btn active" onclick="filterProjects('all',this)">All Projects</button>
-    <button class="filter-btn" onclick="filterProjects('medical',this)">Medical AI</button>
-    <button class="filter-btn" onclick="filterProjects('vision',this)">Computer Vision</button>
-    <button class="filter-btn" onclick="filterProjects('satellite',this)">Satellite</button>
-    <button class="filter-btn" onclick="filterProjects('detection',this)">Detection</button>
-    <button class="filter-btn" onclick="filterProjects('edge',this)">Edge AI</button>
+<section id="credentials">
+  <h2>Education and certificates</h2>
+  <p class="sub">Each certificate links to its verification page.</p>
+  <div class="creds">
+    <div><h3>Education</h3><ul>
+      <li>M.Sc. Computer Engineering, Artificial Intelligence<small>Amirkabir University of Technology (Tehran Polytechnic), 2018 to 2022. GPA 3.86 of 4. Thesis: Few-shot Cascade R-CNN for Human Forensic Age Estimation.</small></li>
+      <li>B.Sc. Computer Engineering<small>Fasa University, 2013 to 2017. Thesis: 3D Human Body Reconstruction from Clothed Images.</small></li>
+    </ul></div>
+    <div><h3>Languages</h3><ul>
+      <li>English, fluent<small><a href="https://app.smalltalk2.me/cert/f7ddd517" rel="noopener">SmallTalk2 speaking test certificate</a></small></li>
+      <li>French, DELF B1</li>
+      <li>Persian, native</li>
+    </ul></div>
   </div>
-
-  <div class="projects-grid" id="projectsGrid">
-
-    <!-- MEDICAL -->
-    <div class="project-card" data-cat="medical">
-      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-medical">● Medical AI</div>
-      <div class="project-title">Automated Medical Image Segmentation</div>
-      <div class="project-desc">U-Net system for brain tumor segmentation on BraTS 2021. Active learning pipeline reducing annotation time by 35%. Deployed across 5 hospitals via MONAI framework.</div>
-      <div class="project-metrics">
-        <span class="metric">0.92 DSC Score</span>
-        <span class="metric">−30% Workload</span>
-        <span class="metric">5 Hospitals</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">U-Net</span><span class="ptag">MONAI</span><span class="ptag">Active Learning</span><span class="ptag">BraTS 2021</span>
-      </div>
-    </div>
-
-    <div class="project-card" data-cat="medical">
-      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-medical">● Medical AI</div>
-      <div class="project-title">Tooth Detection, Segmentation &amp; Numbering</div>
-      <div class="project-desc">Intelligent Dental Imaging System for Endodontic Surgery Prediction. Cascade R-CNN on OPG X-rays with contour analysis for overlapping tooth disambiguation.</div>
-      <div class="project-metrics">
-        <span class="metric">96% Accuracy</span>
-        <span class="metric">−15 min/patient</span>
-        <span class="metric">+27% Numbering</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">Cascade R-CNN</span><span class="ptag">Dental AI</span><span class="ptag">OPG X-rays</span><span class="ptag">CAD Integration</span>
-      </div>
-    </div>
-
-    <div class="project-card" data-cat="medical">
-      <a href="https://github.com/AISoltani/Mask_RCNN_ResNet_101_50" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-medical">● Medical AI</div>
-      <div class="project-title">Medical Image Enhancement &amp; Super-Resolution</div>
-      <div class="project-desc">MRI denoising with SNR improvement from 12 dB to 18 dB on the IXI dataset. CT contrast enhancement via CLAHE for liver lesion detection. Integrated into PACS.</div>
-      <div class="project-metrics">
-        <span class="metric">12→18 dB SNR</span>
-        <span class="metric">−22% Prep Time</span>
-        <span class="metric">PACS Ready</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">Few-Shot</span><span class="ptag">CLAHE</span><span class="ptag">3D Segmentation</span><span class="ptag">IXI Dataset</span>
-      </div>
-    </div>
-
-    <div class="project-card" data-cat="medical">
-      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-medical">● Medical AI</div>
-      <div class="project-title">Retinal Vessel Segmentation &amp; Lesion Grading</div>
-      <div class="project-desc">Transformer-UNet hybrid for automated diabetic retinopathy grading on DRIVE &amp; STARE datasets. Multi-scale feature fusion for accurate vessel tree extraction and microaneurysm detection.</div>
-      <div class="project-metrics">
-        <span class="metric">0.94 AUC</span>
-        <span class="metric">97.2% Sensitivity</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">ViT-UNet</span><span class="ptag">DRIVE Dataset</span><span class="ptag">Retina AI</span>
-      </div>
-    </div>
-
-    <!-- VISION / POSE -->
-    <div class="project-card" data-cat="vision">
-      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-vision">● Computer Vision</div>
-      <div class="project-title">3D Human Body Pose Estimation</div>
-      <div class="project-desc">Transformer-based pose prediction with robust occlusion handling. Real-time deployment via TensorRT with under 30ms latency on Human3.6M benchmark.</div>
-      <div class="project-metrics">
-        <span class="metric">42mm MPJPE</span>
-        <span class="metric">&lt;30ms Latency</span>
-        <span class="metric">−4% vs Baseline</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">Transformer</span><span class="ptag">TensorRT</span><span class="ptag">Human3.6M</span><span class="ptag">Real-Time</span>
-      </div>
-    </div>
-
-    <div class="project-card" data-cat="vision">
-      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-vision">● Computer Vision</div>
-      <div class="project-title">ViUNet: Vision Transformer UNet for Segmentation</div>
-      <div class="project-desc">Novel architecture merging U-Net's localization strengths with ViT's global context modeling. Multi-scale attention mechanisms for robust feature representation across diverse imaging modalities.</div>
-      <div class="project-metrics">
-        <span class="metric">Multi-Scale Attn</span>
-        <span class="metric">Global Context</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">ViT</span><span class="ptag">U-Net</span><span class="ptag">Attention</span><span class="ptag">Custom Architecture</span>
-      </div>
-    </div>
-
-    <div class="project-card" data-cat="vision">
-      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-vision">● Computer Vision</div>
-      <div class="project-title">Multi-Modal Detection: Pose, Face &amp; Hand</div>
-      <div class="project-desc">MediaPipe/OpenCV unified system for simultaneous pose, facial landmark, and hand gesture tracking. Low-light face detection optimized via histogram equalization. Deployed in AR applications.</div>
-      <div class="project-metrics">
-        <span class="metric">Real-Time</span>
-        <span class="metric">3-in-1 Pipeline</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">MediaPipe</span><span class="ptag">OpenCV</span><span class="ptag">AR</span><span class="ptag">Landmark Detection</span>
-      </div>
-    </div>
-
-    <div class="project-card" data-cat="vision">
-      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-vision">● Computer Vision</div>
-      <div class="project-title">Gym Workout Recognition via ST-GCN</div>
-      <div class="project-desc">Spatiotemporal Graph Convolutional Network for real-time gym exercise classification. ONNX deployment enabling efficient inference on fitness applications with 88% accuracy on UCF101.</div>
-      <div class="project-metrics">
-        <span class="metric">88% Accuracy</span>
-        <span class="metric">UCF101</span>
-        <span class="metric">ONNX Deployed</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">ST-GCN</span><span class="ptag">ONNX</span><span class="ptag">Action Recognition</span>
-      </div>
-    </div>
-
-    <div class="project-card" data-cat="vision">
-      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-vision">● Computer Vision</div>
-      <div class="project-title">Image Restoration: Real-ESRGAN &amp; GFPGAN</div>
-      <div class="project-desc">Historical image restoration pipeline using Real-ESRGAN. Fine-tuned GFPGAN for high-fidelity facial reconstruction. HAT super-resolution model deployed in a production mobile application.</div>
-      <div class="project-metrics">
-        <span class="metric">4× Super-Res</span>
-        <span class="metric">Mobile App</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">Real-ESRGAN</span><span class="ptag">GFPGAN</span><span class="ptag">HAT</span><span class="ptag">Mobile Deploy</span>
-      </div>
-    </div>
-
-    <div class="project-card" data-cat="vision">
-      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-vision">● Computer Vision</div>
-      <div class="project-title">Few-Shot Fashion Recommendation System</div>
-      <div class="project-desc">Hybrid few-shot learning approach for visual fashion item retrieval and recommendation. Siamese networks combined with transformer embeddings for outfit compatibility scoring.</div>
-      <div class="project-metrics">
-        <span class="metric">Few-Shot</span>
-        <span class="metric">Siamese Network</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">Few-Shot</span><span class="ptag">Siamese Net</span><span class="ptag">Transformers</span>
-      </div>
-    </div>
-
-    <!-- DETECTION -->
-    <div class="project-card" data-cat="detection">
-      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-detection">● Detection</div>
-      <div class="project-title">Thermal Object Detection: YOLO–Transformer Hybrid</div>
-      <div class="project-desc">Real-time colormap-invariant thermal detection framework. Hybrid YOLO–Transformer architecture achieving robust detection across varied thermal colormap configurations in industrial environments.</div>
-      <div class="project-metrics">
-        <span class="metric">Colormap-Invariant</span>
-        <span class="metric">Real-Time</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">Thermal Imaging</span><span class="ptag">YOLO</span><span class="ptag">Transformer</span><span class="ptag">Industrial AI</span>
-      </div>
-    </div>
-
-    <div class="project-card" data-cat="detection">
-      <a href="https://github.com/AISoltani/Yolov7_LPR" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-detection">● Detection</div>
-      <div class="project-title">License Plate Recognition with YOLOv7</div>
-      <div class="project-desc">End-to-end plate detection and OCR recognition pipeline using YOLOv7. Optimized for varying lighting, angles, and international plate formats with high-speed inference.</div>
-      <div class="project-metrics">
-        <span class="metric">YOLOv7</span>
-        <span class="metric">Multi-Format</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">YOLOv7</span><span class="ptag">OCR</span><span class="ptag">LPR</span><span class="ptag">Real-Time</span>
-      </div>
-    </div>
-
-    <div class="project-card" data-cat="detection">
-      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-detection">● Detection</div>
-      <div class="project-title">Multi-Object Tracking with DeepSORT &amp; ByteTrack</div>
-      <div class="project-desc">Robust multi-object tracking pipeline combining YOLOv8 detection with DeepSORT and ByteTrack. Real-time speed estimation and trajectory analysis for surveillance and traffic monitoring.</div>
-      <div class="project-metrics">
-        <span class="metric">MOTA 78.4%</span>
-        <span class="metric">30+ FPS</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">DeepSORT</span><span class="ptag">ByteTrack</span><span class="ptag">YOLOv8</span><span class="ptag">Tracking</span>
-      </div>
-    </div>
-
-    <div class="project-card" data-cat="detection">
-      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-detection">● Detection</div>
-      <div class="project-title">Industrial Defect Detection System</div>
-      <div class="project-desc">Automated quality control pipeline for manufacturing defect detection. Anomaly detection via PatchCore and supervised YOLOv8 for surface scratch, dent, and contamination classification.</div>
-      <div class="project-metrics">
-        <span class="metric">99.1% Precision</span>
-        <span class="metric">Zero False-Pass</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">PatchCore</span><span class="ptag">Anomaly Detection</span><span class="ptag">Manufacturing</span>
-      </div>
-    </div>
-
-    <!-- SATELLITE -->
-    <div class="project-card" data-cat="satellite">
-      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-satellite">● Satellite / Remote Sensing</div>
-      <div class="project-title">Scalable High-Res Object Detection via Sentinel</div>
-      <div class="project-desc">Rare-object detection and matching framework for large Sentinel satellite tiles. Sliding-window + attention-guided detection with geospatial coordinate output and GeoJSON export.</div>
-      <div class="project-metrics">
-        <span class="metric">Large Tile</span>
-        <span class="metric">GeoJSON Output</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">Sentinel</span><span class="ptag">GDAL</span><span class="ptag">Rasterio</span><span class="ptag">TorchGeo</span>
-      </div>
-    </div>
-
-    <div class="project-card" data-cat="satellite">
-      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-satellite">● Satellite / Remote Sensing</div>
-      <div class="project-title">Road Segmentation via Maxar Open Data &amp; SAM2</div>
-      <div class="project-desc">Zero-shot and few-shot road network extraction from high-resolution Maxar imagery using Segment Anything Model 2. Automated pipeline for urban planning and infrastructure mapping.</div>
-      <div class="project-metrics">
-        <span class="metric">SAM2</span>
-        <span class="metric">Zero-Shot</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">SAM2</span><span class="ptag">Maxar</span><span class="ptag">GeoPandas</span><span class="ptag">Road Network</span>
-      </div>
-    </div>
-
-    <div class="project-card" data-cat="satellite">
-      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-satellite">● Satellite / Remote Sensing</div>
-      <div class="project-title">Fire &amp; Smoke Detection — Industrial &amp; Wildfire</div>
-      <div class="project-desc">Dual-domain detection system for fire and smoke in both industrial environments and wildfire satellite imagery. Temporal analysis for early-warning systems with drone integration capability.</div>
-      <div class="project-metrics">
-        <span class="metric">Early Warning</span>
-        <span class="metric">Multi-Domain</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">Fire Detection</span><span class="ptag">Temporal CV</span><span class="ptag">Drone Integration</span>
-      </div>
-    </div>
-
-    <div class="project-card" data-cat="satellite">
-      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-satellite">● Satellite / Remote Sensing</div>
-      <div class="project-title">Change Detection in Multitemporal Satellite Imagery</div>
-      <div class="project-desc">Siamese network architecture for detecting land-use and structural changes between multitemporal satellite image pairs. Deployed for flood damage assessment and urban expansion monitoring.</div>
-      <div class="project-metrics">
-        <span class="metric">Siamese Net</span>
-        <span class="metric">Flood Assessment</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">Change Detection</span><span class="ptag">Siamese</span><span class="ptag">Multitemporal</span>
-      </div>
-    </div>
-
-    <!-- EDGE AI -->
-    <div class="project-card" data-cat="edge">
-      <a href="https://github.com/AISoltani/Yolov11-Android-Tool-Kotlin" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-edge">● Edge AI</div>
-      <div class="project-title">YOLOv11-EdgeSuite: Universal Mobile Vision Toolkit</div>
-      <div class="project-desc">Android mobile vision toolkit built in Kotlin using YOLOv11 for detection and segmentation on smartphones. Real-time inference via TensorFlow Lite with camera API integration.</div>
-      <div class="project-metrics">
-        <span class="metric">Android</span>
-        <span class="metric">Real-Time</span>
-        <span class="metric">TF Lite</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">YOLOv11</span><span class="ptag">Kotlin</span><span class="ptag">TF Lite</span><span class="ptag">Android</span>
-      </div>
-    </div>
-
-    <div class="project-card" data-cat="edge">
-      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-edge">● Edge AI</div>
-      <div class="project-title">Edge/Corner Detection on Raspberry Pi 4</div>
-      <div class="project-desc">GPU-accelerated Harris Corner and Sobel edge detection for real-time video processing on Raspberry Pi 4. Adaptive thresholding for robust low-light performance.</div>
-      <div class="project-metrics">
-        <span class="metric">GPU Accelerated</span>
-        <span class="metric">Real-Time Video</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">Harris Corner</span><span class="ptag">Sobel</span><span class="ptag">Raspberry Pi 4</span><span class="ptag">OpenCV</span>
-      </div>
-    </div>
-
-    <div class="project-card" data-cat="edge">
-      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-edge">● Edge AI</div>
-      <div class="project-title">Autonomous Driving Perception — CARLA + Openpilot</div>
-      <div class="project-desc">Full AV perception stack integrating object detection, lane segmentation, and depth estimation within the CARLA simulator. Openpilot-compatible policy evaluation for urban and highway scenarios.</div>
-      <div class="project-metrics">
-        <span class="metric">CARLA Sim</span>
-        <span class="metric">Full Stack</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">CARLA</span><span class="ptag">Openpilot</span><span class="ptag">Depth Est.</span><span class="ptag">Lane Seg</span>
-      </div>
-    </div>
-
-    <div class="project-card" data-cat="edge">
-      <a href="https://github.com/AISoltani" class="proj-link" target="_blank">↗</a>
-      <div class="project-cat cat-edge">● Edge AI</div>
-      <div class="project-title">Sign Language Recognition — Real-Time ASL</div>
-      <div class="project-desc">MediaPipe Holistic + LSTM temporal classifier for real-time American Sign Language recognition. Deployed on embedded hardware with under 20ms latency and 94% word-level accuracy.</div>
-      <div class="project-metrics">
-        <span class="metric">94% Word Acc.</span>
-        <span class="metric">&lt;20ms Latency</span>
-      </div>
-      <div class="project-tags">
-        <span class="ptag">MediaPipe</span><span class="ptag">LSTM</span><span class="ptag">ASL</span><span class="ptag">Edge Deploy</span>
-      </div>
-    </div>
-
-  </div>
+  <div class="creds" id="certs"></div>
 </section>
 
-<div class="glitch-divider"></div>
-
-<!-- RESEARCH / PUBLICATIONS -->
-<section id="research">
-  <div class="section-label reveal">Publications &amp; Research</div>
-  <h2 class="section-title reveal">Research<br/>Contributions</h2>
-  <p class="section-sub reveal">Contributing to state-of-the-art in computer vision, medical AI, and deep learning architectures.</p>
-  <div class="research-grid reveal">
-    <div class="research-card">
-      <div class="research-num">01</div>
-      <div>
-        <div class="research-title">ViUNet: Vision Transformer-Based UNet for Image Segmentation</div>
-        <div class="research-meta">Novel architecture · Multi-scale Attention · Cross-domain Generalization</div>
-      </div>
-      <span class="research-badge badge-pub">Research</span>
-    </div>
-    <div class="research-card">
-      <div class="research-num">02</div>
-      <div>
-        <div class="research-title">Few-Shot Cascade R-CNN for Medical Object Detection &amp; Segmentation</div>
-        <div class="research-meta">Medical Imaging · Few-Shot Learning · Cascade Architecture</div>
-      </div>
-      <span class="research-badge badge-pub">Applied</span>
-    </div>
-    <div class="research-card">
-      <div class="research-num">03</div>
-      <div>
-        <div class="research-title">Real-Time Colormap-Invariant Thermal Detection via Hybrid YOLO–Transformer</div>
-        <div class="research-meta">Industrial AI · Thermal Imaging · Domain Adaptation</div>
-      </div>
-      <span class="research-badge badge-pub">Research</span>
-    </div>
-    <div class="research-card">
-      <div class="research-num">04</div>
-      <div>
-        <div class="research-title">Rare Object Detection &amp; Matching in Large Satellite Tiles</div>
-        <div class="research-meta">Remote Sensing · Geospatial AI · Sentinel Imagery</div>
-      </div>
-      <span class="research-badge badge-wip">In Progress</span>
-    </div>
-    <div class="research-card">
-      <div class="research-num">05</div>
-      <div>
-        <div class="research-title">2D–3D Super-Resolution–Driven Detection of Medical Imaging Targets</div>
-        <div class="research-meta">Super-Resolution · 3D Medical Reconstruction · Diagnostic AI</div>
-      </div>
-      <span class="research-badge badge-pub">Applied</span>
-    </div>
-    <div class="research-card">
-      <div class="research-num">06</div>
-      <div>
-        <div class="research-title">Adaptive Few-Shot Density HeatMap Generation for Crowd Analysis</div>
-        <div class="research-meta">Crowd Counting · Density Estimation · Few-Shot Adaptation</div>
-      </div>
-      <span class="research-badge badge-wip">In Progress</span>
-    </div>
-  </div>
-</section>
-
-<div class="glitch-divider"></div>
-
-<!-- GITHUB STATS -->
-<section id="github">
-  <div class="section-label reveal">GitHub Activity</div>
-  <h2 class="section-title reveal">By The<br/>Numbers</h2>
-  <div class="stats-grid reveal">
-    <div class="stats-card">
-      <div class="stats-icon">⭐</div>
-      <div class="stats-value">76</div>
-      <div class="stats-lbl">Stars Earned</div>
-    </div>
-    <div class="stats-card">
-      <div class="stats-icon">👥</div>
-      <div class="stats-value">1.8K</div>
-      <div class="stats-lbl">Followers</div>
-    </div>
-    <div class="stats-card">
-      <div class="stats-icon">📦</div>
-      <div class="stats-value">84</div>
-      <div class="stats-lbl">Repositories</div>
-    </div>
-    <div class="stats-card">
-      <div class="stats-icon">🏆</div>
-      <div class="stats-value">6</div>
-      <div class="stats-lbl">Achievements</div>
-    </div>
-    <div class="stats-card">
-      <div class="stats-icon">🔀</div>
-      <div class="stats-value">20+</div>
-      <div class="stats-lbl">Forks</div>
-    </div>
-  </div>
-
-  <div class="github-img-row reveal">
-    <div class="github-img-card">
-      <h4>GitHub Stats</h4>
-      <img src="https://awesome-github-stats.azurewebsites.net/user-stats/AISoltani?cardType=level&theme=tokyonight&preferLogin=false" alt="GitHub Stats" loading="lazy"/>
-    </div>
-    <div class="github-img-card">
-      <h4>Trophies</h4>
-      <img src="https://github-trophies.vercel.app/?username=AISoltani&theme=tokyonight&row=1&column=6" alt="Trophies" loading="lazy"/>
-    </div>
-    <div class="github-img-card">
-      <h4>Top Languages</h4>
-      <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=AISoltani&layout=compact&theme=tokyonight" alt="Top Languages" loading="lazy"/>
-    </div>
-  </div>
-</section>
-
-<div class="glitch-divider"></div>
-
-<!-- CONTACT -->
 <section id="contact">
-  <div class="contact-wrapper">
-    <div class="reveal">
-      <div class="section-label">Contact</div>
-      <h2 class="contact-headline">
-        Let's Build<br/>
-        <span class="line2">Something<br/>Extraordinary</span>
-      </h2>
-      <p class="contact-blurb">Open to collaborations, research partnerships, consulting engagements, and challenging AI projects. Whether it's medical imaging, real-time vision, or autonomous systems — let's connect.</p>
-      <a href="mailto:amirsoltani.os@gmail.com" class="btn-primary" style="display:inline-block;">Send Email →</a>
-    </div>
-    <div class="social-links reveal">
-      <a href="https://github.com/AISoltani" target="_blank" class="social-link">
-        <div class="social-link-icon icon-github">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-        </div>
-        <div class="social-link-info">
-          <div class="social-link-name">GitHub</div>
-          <div class="social-link-handle">@AISoltani · 1.8K followers</div>
-        </div>
-        <span class="social-link-arrow">→</span>
-      </a>
-      <a href="https://www.linkedin.com/in/amir-soltani-aisoltani/" target="_blank" class="social-link">
-        <div class="social-link-icon icon-linkedin">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="#0077b5"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-        </div>
-        <div class="social-link-info">
-          <div class="social-link-name">LinkedIn</div>
-          <div class="social-link-handle">amir-soltani-aisoltani</div>
-        </div>
-        <span class="social-link-arrow">→</span>
-      </a>
-      <a href="https://www.kaggle.com/aisoltani" target="_blank" class="social-link">
-        <div class="social-link-icon icon-kaggle">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="#20beff"><path d="M18.825 23.859c-.022.092-.117.141-.281.141h-3.139c-.187 0-.351-.082-.492-.248l-5.178-6.589-1.448 1.374v5.111c0 .235-.117.352-.351.352H5.505c-.236 0-.354-.117-.354-.352V.353c0-.236.118-.353.354-.353h2.431c.234 0 .351.117.351.353v14.343l6.203-6.272c.165-.165.33-.246.495-.246h3.239c.144 0 .236.06.285.18.046.149.034.255-.036.315l-6.555 6.344 6.836 8.507c.095.104.117.208.07.335"/></svg>
-        </div>
-        <div class="social-link-info">
-          <div class="social-link-name">Kaggle</div>
-          <div class="social-link-handle">@aisoltani</div>
-        </div>
-        <span class="social-link-arrow">→</span>
-      </a>
-      <a href="https://x.com/AISoltani" target="_blank" class="social-link">
-        <div class="social-link-icon icon-twitter">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        </div>
-        <div class="social-link-info">
-          <div class="social-link-name">X (Twitter)</div>
-          <div class="social-link-handle">@AISoltani</div>
-        </div>
-        <span class="social-link-arrow">→</span>
-      </a>
-      <a href="mailto:amirsoltani.os@gmail.com" class="social-link">
-        <div class="social-link-icon icon-email">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="#ea4335"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.910 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>
-        </div>
-        <div class="social-link-info">
-          <div class="social-link-name">Email</div>
-          <div class="social-link-handle">amirsoltani.os@gmail.com</div>
-        </div>
-        <span class="social-link-arrow">→</span>
-      </a>
-    </div>
-  </div>
+  <h2>Get in touch</h2>
+  <p class="sub">Open to senior computer vision and machine learning roles, research collaborations and PhD opportunities.</p>
+  <a class="mail" href="mailto:amirsoltani.os@gmail.com">amirsoltani.os@gmail.com</a>
+  <p class="links"><span><a href="https://github.com/AISoltani" rel="noopener">GitHub</a><span id="gh"></span></span><a href="https://www.linkedin.com/in/amir-soltani-aisoltani/" rel="noopener">LinkedIn</a><a href="https://www.kaggle.com/aisoltani" rel="noopener">Kaggle</a><a href="https://x.com/AISoltani" rel="noopener">X</a></p>
 </section>
+</main>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-logo">AISoltani</div>
-  <div class="footer-copy">© 2025 Amir Soltani · AI Engineer &amp; Computer Vision Researcher</div>
-  <div class="footer-links">
-    <a href="https://github.com/AISoltani" target="_blank">GitHub</a>
-    <a href="https://www.linkedin.com/in/amir-soltani-aisoltani/" target="_blank">LinkedIn</a>
-    <a href="#hero">Back to Top ↑</a>
-  </div>
-</footer>
+<footer>&copy; Amir Soltani</footer>
+</div>
+
+<div class="bands" role="group" aria-label="Sensor view">
+  <span>View in</span>
+  <button type="button" data-b="visible" aria-pressed="true"><kbd>1</kbd>Visible</button>
+  <button type="button" data-b="thermal" aria-pressed="false"><kbd>2</kbd>Thermal</button>
+  <button type="button" data-b="infrared" aria-pressed="false"><kbd>3</kbd>Infrared</button>
+  <button type="button" data-b="xray" aria-pressed="false"><kbd>4</kbd>X-ray</button>
+</div>
 
 <script>
-/* ── NEURAL NETWORK CANVAS ── */
-const canvas = document.getElementById('neuralCanvas');
-const ctx = canvas.getContext('2d');
-let W, H, nodes = [], animId;
+(function(){
+"use strict";
+var root=document.documentElement,still=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;")}
 
-function resize() {
-  W = canvas.width = window.innerWidth;
-  H = canvas.height = window.innerHeight;
+/* ---------- Projects ----------
+   To add one, append a row: [title, fields, source, headline figure, description, built with, image path or 0, repo name or 0]
+   fields: med geo mov drv ind edg vlm (space separated). source: a key of SRC. */
+var R="https://raw.githubusercontent.com/AISoltani/",G="https://github.com/AISoltani/";
+var SRC={nova:"Nova Vision, 2025 to 2026",vr:"VRVis, 2023 to 2025",sc:"Sculp AI, 2022 to 2024",sm:"SoftwareMotion, 2022 to 2023",g4:"G42 Healthcare, 2020 to 2021",am:"AMA-CTRL, 2016 to 2019",re:"Research project",pr:"Independent prototype",os:"Open source",sh:"Showcase"};
+var FIELDS=[["all","All"],["med","Medical imaging"],["geo","Satellite and thermal"],["mov","Fitness and pose"],["drv","Driver assistance"],["ind","Industrial"],["edg","Edge and tooling"],["vlm","Language and vision"]];
+var WORK=[
+["Early stroke screening from face, voice and ECG","med","nova","Three signals together","A screening workflow that combines facial movement from video with voice features and ECG signals, so the research team can assess several patient signals at once.","video analysis, voice features and ECG signals",0,0],
+["Cardiovascular risk from clinical and genomic data","med","nova","Tabular Transformer","Risk stratification with a tabular Transformer and gated fusion over clinical and genomic variables.","a tabular Transformer with gated fusion",0,0],
+["Finding visually similar clinical cases","med vlm","nova","CLIP, DINOv2, SigLIP","Foundation-model embeddings added to clinical image retrieval, so reviewers can pull up visually similar cases during triage.","CLIP, DINOv2 and SigLIP embeddings",0,0],
+["Masks from a text prompt","med vlm","nova","Grounding DINO with SAM 3","An evaluation of text-guided localization and mask generation on selected images, to support image review and annotation.","Grounding DINO and SAM 3",0,0],
+["Clinical documents into structured records","med vlm","nova","OCR and LLMs","Extracts diagnoses, medications and laboratory results from unstructured clinical documents and turns them into structured, searchable data.","OCR, NLP and LLMs",0,0],
+["An assistant that reads clinical reports","med vlm","nova","Retrieval and LLMs","Retrieval-backed assistants that analyse clinical reports, summarize patient histories and answer domain questions with evidence from the documents.","LLMs, RAG and semantic search",0,0],
+["3D detection in MRI and CT with few labels","med","g4","Pseudo-labels","Weakly supervised 3D detection and segmentation pipelines for MRI and CT volumes, using pseudo-labels to make better use of limited annotations.","weak supervision and pseudo-labelling",0,0],
+["Tooth detection in panoramic dental X-rays","med","g4","CNN-Transformer","A CNN-Transformer model for tooth detection and classification in panoramic dental X-rays.","a CNN-Transformer in PyTorch",0,0],
+["Skin-lesion triage on a Jetson Nano","med edg","g4","INT8, up to 4x faster","Quantized ONNX models running on Jetson Nano. INT8 inference ran up to four times faster than the FP32 baseline.","ONNX Runtime, INT8 quantization and Jetson Nano",0,0],
+["Choosing the MRI slices worth analysing","med","g4","About 35% less compute","Entropy-guided pruning selects the informative MRI slices for brain-tumour detection, which reduced compute by about 35%.","entropy-guided slice pruning",0,0],
+["Tumour segmentation that copes with noisy scans","med","g4","Self-distillation","Noise-robust brain-tumour segmentation for low-quality MRI scans, using self-distillation and consistency regularization.","self-distillation and consistency regularization",0,0],
+["Numbering teeth, including the overlapping ones","med","re","96% accuracy","Cascade R-CNN analysis of panoramic dental X-rays. Contour post-processing improved overlapping-tooth numbering by 27%.","Cascade R-CNN and contour post-processing",0,0],
+["Brain-tumour segmentation on BraTS","med","re","0.92 DSC","U-Net and MONAI workflows on BraTS MRI data. An active-learning review loop reduced annotation time by about 35% while keeping 89% agreement with expert labels.","U-Net, MONAI and active learning",0,0],
+["Few-shot 3D segmentation and scan clean-up","med","re","SNR from 12 to 18 dB","Prototypical networks for 3D volumes with limited labels. MRI denoising improved SNR from 12 dB to 18 dB on IXI data, and CT preprocessing cut PACS preparation from 10 to 7.8 minutes per volume.","prototypical networks and denoising",0,0],
+["Detecting medical targets from a handful of examples","med","re","Few-shot Cascade R-CNN","Few-shot detection and segmentation of medical targets with Cascade R-CNN. My M.Sc. thesis applied few-shot Cascade R-CNN to forensic age estimation.","Cascade R-CNN, Mask R-CNN and few-shot learning","Mask_RCNN_ResNet_101_50/refs/heads/main/Few-shot.gif","Mask_RCNN_ResNet_101_50"],
+["Super-resolution that helps find small medical targets","med","re","2D and 3D","Super-resolution used as a front end for detecting small targets in 2D and 3D medical images.","super-resolution and detection models","labelbox/refs/heads/master/MedicalSR.png",0],
+["ViUNet: a Vision Transformer encoder inside a U-Net","med geo","re","Multi-scale attention","Combines U-Net localization with a Vision Transformer encoder to capture broader image context, for segmentation across medical and satellite imagery.","a ViT encoder, U-Net and multi-scale attention",0,0],
+["Blood-test reports turned into data","med ind","am","70% less data entry","Digitized blood-test reports with Tesseract OCR and OpenCV preprocessing, reducing manual data-entry time by 70%.","Tesseract OCR and OpenCV",0,0],
+["Mapping forest type with Prithvi-100M","geo","vr","Sentinel-2 time series","A geospatial foundation model fine-tuned for forest-cover classification, telling coniferous from broadleaf stands in multispectral satellite and UAV imagery.","Prithvi-100M and Sentinel-2 time series",0,0],
+["Small plants in very large images","geo","vr","Tiled detection","Tiled detection pipelines for small plant species in high-resolution satellite images, with hard-negative mining to handle cluttered backgrounds.","tiled detection and hard-negative mining",0,0],
+["Small objects in whole satellite scenes","geo","vr","SAHI, HBB and OBB","Sliced inference with horizontal and oriented bounding boxes, so large satellite scenes can be processed without losing small targets.","SAHI with horizontal and oriented boxes","labelbox/refs/heads/master/Sentinel.gif",0],
+["Counting animals from UAV imagery","geo","vr","YOLOv11-seg with SAM 2","A detection and counting pipeline for UAV imagery. Later experiments in 2024 used YOLOv11-seg with SAM 2 to refine object masks.","YOLOv11-seg and SAM 2",0,0],
+["Sharper Sentinel-2 from several passes","geo","vr","Multi-image super-resolution","Multi-image super-resolution applied to Sentinel-2 sequences to improve spatial detail for environmental monitoring.","multi-image super-resolution",0,0],
+["Catching fires early from thermal drones","geo","vr","23% fewer false alarms","Thermal drone models that detect early fire ignition and thin smoke or flame plumes.","thermal drone imagery",0,0],
+["People and animals in active fire zones","geo","vr","Thermal tracking","Thermal object detection and tracking for people and animals in active fire zones.","thermal detection and tracking",0,0],
+["Thermal detection that ignores the colormap","geo","re","YOLO-Transformer hybrid","A real-time thermal detector built to stay reliable across colormap settings.","a hybrid YOLO-Transformer","labelbox/refs/heads/master/Thermal-DT.gif",0],
+["Rare objects, smoke and change in satellite data","geo","re","Siamese Transformers","Rare-object detection in large tiles with SAHI and tile-level NMS, early smoke detection in GeoTIFF imagery and multi-temporal change detection. Prithvi-100M and Clay fine-tuned for Earth-observation tasks.","SAHI, Siamese Transformers, Prithvi-100M and Clay",0,0],
+["Where was this aerial photo taken?","geo","pr","Place recognition","Visual place recognition and sequence matching to find related aerial frames under changes in viewpoint, scale and illumination. Nearest-neighbour search shortlists candidate locations for review.","image descriptors, embeddings and nearest-neighbour search",0,0],
+["AI Fitness Coach","mov edg","sc","40+ exercises, under 30 ms","A mobile product that gives exercise-form feedback from real-time pose estimation during live and recorded workouts. Joint-angle tracking and repetition counting run on the device.","ONNX Runtime and TensorRT",0,0],
+["PhysioTrack","mov","sc","Rehabilitation","A movement-analysis workflow for rehabilitation and progressive-load guidance, reviewed by licensed physiotherapists.","pose estimation and movement analysis",0,0],
+["Tracking muscle and fat change between sessions","mov","sc","Dice 0.94, mAP@50 0.92","Muscle and fat segmentation with repeat-session image alignment for consistent progress tracking. Precision 90.2% and recall 91% on the internal benchmark. A distilled MobileSAM-based model under 35 MB runs on mid-range phones.","segmentation, image alignment and a distilled MobileSAM","labelbox/refs/heads/master/Muscle.png",0],
+["Pose that holds up when the view is blocked","mov","sc","6% better PCKh","ViTPose+ fine-tuned with synthetic gym augmentations, improving robustness on occluded users by 6% PCKh on the internal benchmark.","ViTPose+ and synthetic augmentation",0,0],
+["A fitness dataset annotators agree on","mov","sc","13k+ images","Front, back and side-view images organized for muscle-region annotation, with QA in CVAT and Labelbox, active-learning review cycles and feedback from sports-medicine specialists. A six-person data team.","CVAT, Labelbox and active learning",0,0],
+["Form feedback that also listens","mov","sc","Pose plus audio","Pose outputs combined with audio cues such as repetition tempo and breathing, for more useful feedback in virtual classes.","pose estimation and audio cues",0,0],
+["3D human pose with a Transformer lifter","mov","re","42 mm MPJPE","A Transformer-based lifter reaching 42 mm MPJPE on Human3.6M. TensorRT INT8 optimization brought inference under 30 ms.","a Transformer lifter and TensorRT INT8",0,0],
+["Body pose, keypoints and shape from several models","mov","re","Three pose models","Multiple body pose, point and shape estimation with MoveNet, PoseNet and MediaPipe.","MoveNet, PoseNet and MediaPipe","AISoltani/main/.github/workflows/pose.png",0],
+["Pose, face and hand tracking in one pipeline","mov","re","Shared landmarks","A shared-landmark pipeline. CLAHE improved face detection in low light, and real-time hand tracking was deployed in an AR application.","MediaPipe, OpenCV and CLAHE",0,0],
+["Recognizing gym exercises from skeleton motion","mov","re","88% on UCF-101","An ST-GCN model for workout action recognition, exported to ONNX for real-time inference on mobile hardware.","ST-GCN and ONNX",0,0],
+["Is that object on a collision course?","drv","sm","Risk-aware tracking","Multi-object tracking with collision-course estimation from forward-facing cameras, for ADAS warning systems.","multi-object tracking",0,0],
+["Watching the driver as well as the road","drv","sm","Gaze, blink, head pose, seatbelt","A real-time driver-monitoring system for fleet-safety workflows.","real-time video analytics",0,0],
+["Drowsiness detection in under 15 ms","drv edg","sm","Under 15 ms on Orin Nano","Facial landmarks feed a compact temporal network. Inference runs under 15 ms on Jetson Orin Nano.","facial landmarks, a temporal network and Jetson Orin Nano",0,0],
+["Seeing pedestrians at night and in bad weather","drv","sm","Thermal","Thermal detection and tracking for pedestrians and vehicles in low-light and adverse-weather conditions.","thermal detection and tracking",0,0],
+["Reading driver gestures and attention","drv","sm","Temporal GCN","Gesture and attention recognition from cabin cameras.","MediaPipe landmarks and a temporal GCN",0,0],
+["A bird's-eye view from several cameras","drv","sm","LSS-style lifter","A prototype of multi-camera bird's-eye-view fusion with a lightweight LSS-style feature lifter, for downstream occupancy-grid tasks.","multi-camera BEV fusion",0,0],
+["Road surface and obstacles for embedded navigation","drv edg","sm","Embedded","Road-surface and obstacle detection for embedded autonomous-navigation systems.","embedded vision models",0,0],
+["Reading industrial meters in real time","ind","am","Odometer reading","A real-time odometer-reading system for industrial meter monitoring.","OpenCV",0,0],
+["Helmets, harnesses and restricted zones","ind","am","Site safety","Helmet detection combined with face recognition for site-access control, plus pose-estimation checks for harness use, worker posture and restricted zones.","YOLO, face recognition and pose estimation","Vison_advanced/refs/heads/main/Safety.png",0],
+["Who and what is moving around the site","ind","am","Tracking and heatmaps","Real-time monitoring of worker and vehicle presence across industrial sites, with object tracking and heatmaps that show how movement flows.","object tracking and heatmaps",0,0],
+["Gesture control for smart-home devices","ind edg","am","Under 50 ms on edge","Gesture recognition for IoT smart-home devices, with response time below 50 ms on edge hardware.","a gesture model on edge hardware",0,0],
+["Fashion recommendations from a few examples","ind","am","Metric learning","A few-shot fashion recommendation system that combines metric learning with lightweight content-based filtering.","metric learning and content-based filtering","AISoltani/main/.github/workflows/ScreenShot_20231103191154.png",0],
+["Density heatmaps from a few labelled examples","ind","re","Few-shot counting","A few-shot generator of object-density heatmaps.","density estimation","labelbox/refs/heads/master/HeatMap.png",0],
+["Smart parking occupancy","ind","sh","Occupancy analytics","Camera-based detection of parking-space occupancy, with analytics.","object detection","Vison_advanced/refs/heads/main/Parking-AS.png",0],
+["Vision-driven process automation","ind","sh","RPA","Computer vision that drives robotic process automation.","computer vision","Vison_advanced/refs/heads/main/RPA2.png",0],
+["Traffic analytics and vehicle tracking","ind","sh","Vehicle tracking","Vehicle detection and tracking for traffic analytics.","detection and tracking","Vison_advanced/refs/heads/main/TAS.png",0],
+["Drone-assisted inspection of electrical substations","ind","sh","Asset and anomaly visualization","A visual showcase of drone-assisted inspection of substation assets, including transformers, busbars, circuit breakers and insulators, with annotated examples of surface conditions such as oil staining, corrosion and potential overheating.","drone imagery and visual anomaly annotations","Vison_advanced/refs/heads/main/Drone-assisted.png",0],
+["YOLOv11-EdgeSuite for Android","edg","os","On-device","A mobile vision toolkit that runs YOLOv11 detection and segmentation models on smartphones.","YOLOv11, Kotlin and Android","Yolov11-Android-Tool-Kotlin/refs/heads/main/SCR1.jpg","Yolov11-Android-Tool-Kotlin"],
+["Licence plate detection and recognition","edg","os","YOLOv7","Plate detection and recognition with YOLOv7.","YOLOv7",0,"Yolov7_LPR"],
+["Image processing toolkit","edg","os","OpenCV","A collection of image-processing tools built on OpenCV.","Python and OpenCV",0,"Image_Processing_Tools"],
+["Edges and corners on a Raspberry Pi 4","edg","re","Low-light video","Adaptive thresholding for low-light video and GPU-accelerated Harris and Sobel detection on Raspberry Pi 4.","OpenCV and Raspberry Pi 4",0,0],
+["Restoring old photographs and faces","edg","re","Real-ESRGAN, GFPGAN, HAT","Historical photographs restored with Real-ESRGAN, GFPGAN fine-tuned for face restoration and HAT super-resolution deployed in a mobile application.","Real-ESRGAN, GFPGAN and HAT",0,0],
+["From notebook to service","edg","re","Serving and evaluation","Reusable patterns for Dockerized inference APIs, experiment tracking, model versioning, scheduled evaluation and monitoring, so models hand over cleanly to the teams that operate them.","Docker, inference APIs and experiment tracking",0,0],
+["Clinical knowledge assistant","vlm med","pr","RAG prototype","A document-search assistant for clinical protocols and AI research notes. It chunks source documents, retrieves relevant passages, reranks results and returns answers grounded in the source material.","LLMs, retrieval and reranking",0,0],
+["Search medical cases by text or image","vlm med","pr","VLM prototype","Text-to-image and image-to-image retrieval for medical cases using shared visual and text embeddings, with a language-model layer that summarizes retrieved evidence for reviewer triage.","shared visual and text embeddings",0,0]
+];
+
+var list=document.getElementById("list"),tools=document.getElementById("filters"),q=document.getElementById("q"),count=document.getElementById("count"),cur="all";
+function has(w,f){return f=="all"||(" "+w+" ").indexOf(" "+f+" ")>-1}
+WORK.forEach(function(w){
+  var d=document.createElement("details");d.className="row";d.dataset.d=w[1];
+  d.dataset.t=(w[0]+" "+w[3]+" "+w[4]+" "+w[5]+" "+SRC[w[2]]).toLowerCase();
+  d.innerHTML='<summary><h3>'+esc(w[0])+'</h3><span class="fig">'+esc(w[3])+'</span><span class="ctx">'+esc(SRC[w[2]])+'</span></summary>'+
+    '<div class="more"><div><p>'+esc(w[4])+'</p><p class="with">Built with '+esc(w[5])+'.</p>'+
+    (w[7]?'<p class="with"><a href="'+G+w[7]+'" rel="noopener">View the code on GitHub</a></p>':'')+'</div>'+
+    (w[6]?'<figure class="plate"><img alt="'+esc(w[0])+'" data-src="'+R+w[6]+'"><figcaption></figcaption></figure>':'')+'</div>';
+  d.addEventListener("toggle",function(){var i=d.querySelector("img[data-src]");if(d.open&&i){i.src=i.dataset.src;i.removeAttribute("data-src")}});
+  list.appendChild(d);
+});
+function apply(){
+  var s=q.value.trim().toLowerCase(),n=0;
+  [].forEach.call(list.querySelectorAll(".row"),function(d){var ok=has(d.dataset.d,cur)&&(!s||d.dataset.t.indexOf(s)>-1);d.hidden=!ok;if(ok)n++});
+  count.textContent=n?"Showing "+n+" of "+WORK.length+" projects. Select one to read more.":"No project matches that. Clear the search box or pick another field.";
 }
-resize();
-window.addEventListener('resize', resize);
+FIELDS.forEach(function(f){
+  var n=WORK.filter(function(w){return has(w[1],f[0])}).length,b=document.createElement("button");
+  b.type="button";b.textContent=f[1]+" ("+n+")";b.setAttribute("aria-pressed",f[0]==cur);
+  b.addEventListener("click",function(){cur=f[0];[].forEach.call(tools.querySelectorAll("button"),function(x){x.setAttribute("aria-pressed",x==b)});apply()});
+  tools.insertBefore(b,q);
+});
+q.addEventListener("input",apply);apply();
 
-const NODE_COUNT = 80;
-for (let i = 0; i < NODE_COUNT; i++) {
-  nodes.push({
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * window.innerHeight,
-    vx: (Math.random() - 0.5) * 0.4,
-    vy: (Math.random() - 0.5) * 0.4,
-    r: Math.random() * 2 + 1
-  });
-}
-
-function drawNeural() {
-  ctx.clearRect(0, 0, W, H);
-  // Move nodes
-  nodes.forEach(n => {
-    n.x += n.vx; n.y += n.vy;
-    if (n.x < 0 || n.x > W) n.vx *= -1;
-    if (n.y < 0 || n.y > H) n.vy *= -1;
-  });
-  // Draw connections
-  for (let i = 0; i < nodes.length; i++) {
-    for (let j = i + 1; j < nodes.length; j++) {
-      const dx = nodes[i].x - nodes[j].x;
-      const dy = nodes[i].y - nodes[j].y;
-      const d = Math.sqrt(dx * dx + dy * dy);
-      if (d < 150) {
-        const alpha = (1 - d / 150) * 0.4;
-        ctx.beginPath();
-        ctx.moveTo(nodes[i].x, nodes[i].y);
-        ctx.lineTo(nodes[j].x, nodes[j].y);
-        ctx.strokeStyle = `rgba(0,212,255,${alpha})`;
-        ctx.lineWidth = 0.5;
-        ctx.stroke();
-      }
-    }
-  }
-  // Draw nodes
-  nodes.forEach(n => {
-    ctx.beginPath();
-    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(0,212,255,0.5)';
-    ctx.fill();
-  });
-  animId = requestAnimationFrame(drawNeural);
-}
-drawNeural();
-
-/* ── TYPEWRITER ── */
-const words = ['Computer Vision.','Medical AI.','Deep Learning.','Real-Time Systems.','Edge Deployment.'];
-let wi = 0, ci = 0, deleting = false;
-const tw = document.getElementById('typewriter');
-function typeStep() {
-  const word = words[wi];
-  if (!deleting) {
-    tw.textContent = word.slice(0, ++ci);
-    if (ci === word.length) { deleting = true; setTimeout(typeStep, 1800); return; }
-  } else {
-    tw.textContent = word.slice(0, --ci);
-    if (ci === 0) { deleting = false; wi = (wi + 1) % words.length; }
-  }
-  setTimeout(typeStep, deleting ? 60 : 90);
-}
-typeStep();
-
-/* ── SCROLL REVEAL ── */
-const revealEls = document.querySelectorAll('.reveal');
-const io = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.1 });
-revealEls.forEach(el => io.observe(el));
-
-/* ── TIMELINE REVEAL ── */
-const timelineItems = document.querySelectorAll('.timeline-item');
-const tio = new IntersectionObserver((entries) => {
-  entries.forEach((e, i) => {
-    if (e.isIntersecting) {
-      setTimeout(() => e.target.classList.add('visible'), i * 150);
-    }
-  });
-}, { threshold: 0.1 });
-timelineItems.forEach(el => tio.observe(el));
-
-/* ── NAV SCROLL ── */
-window.addEventListener('scroll', () => {
-  document.getElementById('mainNav').style.background =
-    window.scrollY > 50 ? 'rgba(4,8,15,0.97)' : 'rgba(4,8,15,0.85)';
+/* ---------- Certificates ---------- */
+var CU="https://www.coursera.org/account/accomplishments/",certs=document.getElementById("certs");
+[["Stanford University: AI in healthcare",[["AI in Healthcare Specialization","specialization/R9C9W2YRK1WZ"],["Introduction to Healthcare","verify/MV4UYUOWYGTJ"],["Introduction to Clinical Data","verify/85BXCOE7ZWDI"],["Fundamentals of Machine Learning for Healthcare","verify/B1X7ZRZ7U7WY"],["Evaluations of AI Applications in Healthcare","verify/ZWEPEAF5WLJA"],["AI in Healthcare Capstone","verify/DN9UR5QS0Y3L"]]],
+ ["Yale University: health and medical software",[["Introduction to Medical Software","verify/64MM329IZ0NC"],["Essentials of Global Health","verify/VDZZUE7065VT"],["Breast Cancer","verify/DHYV19S7M35S"]]],
+ ["DeepLearning.AI and Stanford Online: machine learning",[["Machine Learning Specialization","specialization/9YTCR5C6A57W"],["Supervised Machine Learning: Regression and Classification","verify/U2S4BSCSTHK1"],["Advanced Learning Algorithms","verify/H6OQV45C7N37"],["Unsupervised Learning, Recommenders, Reinforcement Learning","verify/BYE5I5GSW96I"]]],
+ ["Stanford University: algorithms",[["Graph Search, Shortest Paths, and Data Structures","verify/5S4RSTH8CABW"],["Greedy Algorithms, Minimum Spanning Trees, and Dynamic Programming","verify/LTDQ2550591R"]]]
+].forEach(function(g){
+  var h="<h3>"+esc(g[0])+"</h3><ul>";
+  g[1].forEach(function(c){h+='<li><a href="'+CU+c[1]+'" rel="noopener">'+esc(c[0])+"</a></li>"});
+  var d=document.createElement("div");d.innerHTML=h+"</ul>";certs.appendChild(d);
 });
 
-/* ── PROJECT FILTER ── */
-function filterProjects(cat, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.project-card').forEach(card => {
-    if (cat === 'all' || card.dataset.cat === cat) {
-      card.style.display = '';
-      card.style.animation = 'fadeUp 0.4s ease forwards';
-    } else {
-      card.style.display = 'none';
+/* ---------- Hero scene: a toy tracker, drawn differently in each sensor view ---------- */
+var cv=document.getElementById("scene"),cx=cv.getContext("2d"),VW=0,VH=0,objs=[],P={},raf=0,seen=true,KIND=["person","vehicle","animal"];
+function pal(){var s=getComputedStyle(root);function v(n){return s.getPropertyValue(n).trim()}return{bg:v("--panel"),ink:v("--ink"),ac:v("--accent")}}
+function size(){var r=cv.getBoundingClientRect(),d=Math.min(window.devicePixelRatio||1,2);VW=r.width;VH=r.height;cv.width=VW*d;cv.height=VH*d;cx.setTransform(d,0,0,d,0,0)}
+function seed(){
+  objs=[];
+  for(var i=0,n=VW<700?5:9;i<n;i++){
+    var k=i%3,s=34+Math.random()*38,w=k==0?s*.5:k==1?s*1.7:s*1.15,h=k==0?s*1.3:s*.7;
+    objs.push({id:i+1,k:k,w:w,h:h,x:w/2+Math.random()*Math.max(1,VW-w),y:h/2+26+Math.random()*Math.max(1,VH-h-26),vx:(Math.random()-.5)*(k==1?1.2:.6),vy:(Math.random()-.5)*.35,c:.86+Math.random()*.13,t:[]});
+  }
+}
+function draw(){
+  var b=root.dataset.band;cx.clearRect(0,0,VW,VH);
+  objs.forEach(function(o){
+    if(!still){
+      o.x+=o.vx;o.y+=o.vy;
+      if(o.x<o.w/2){o.x=o.w/2;o.vx*=-1}if(o.x>VW-o.w/2){o.x=VW-o.w/2;o.vx*=-1}
+      if(o.y<o.h/2+26){o.y=o.h/2+26;o.vy*=-1}if(o.y>VH-o.h/2){o.y=VH-o.h/2;o.vy*=-1}
+      o.t.push([o.x,o.y]);if(o.t.length>80)o.t.shift();
+      if(Math.random()<.02)o.c=Math.max(.8,Math.min(.99,o.c+(Math.random()-.5)*.05));
     }
+    var x=o.x-o.w/2,y=o.y-o.h/2;
+    cx.globalAlpha=.4;cx.strokeStyle=P.ac;cx.lineWidth=1.5;cx.beginPath();
+    o.t.forEach(function(p,i){i?cx.lineTo(p[0],p[1]):cx.moveTo(p[0],p[1])});cx.stroke();
+    if(b=="thermal"){
+      var r=Math.max(o.w,o.h)*.8,g=cx.createRadialGradient(o.x,o.y,1,o.x,o.y,r);
+      g.addColorStop(0,"#FCFFA4");g.addColorStop(.3,"#F98E09");g.addColorStop(.65,"rgba(187,55,84,.6)");g.addColorStop(1,"rgba(101,21,110,0)");
+      cx.globalAlpha=1;cx.fillStyle=g;cx.beginPath();cx.arc(o.x,o.y,r,0,7);cx.fill();
+    }else{
+      cx.globalAlpha=b=="xray"?.22:b=="infrared"?.45:.18;cx.fillStyle=b=="infrared"?P.ac:P.ink;cx.beginPath();
+      if(o.k==2)cx.ellipse(o.x,o.y,o.w/2,o.h/2,0,0,7);else cx.rect(x,y,o.w,o.h);
+      cx.fill();
+      if(b=="xray"){cx.beginPath();cx.ellipse(o.x,o.y,o.w*.3,o.h*.3,0,0,7);cx.fill()}
+    }
+    cx.globalAlpha=1;cx.lineWidth=2;cx.setLineDash(b=="xray"?[6,4]:[]);cx.strokeRect(x-4,y-4,o.w+8,o.h+8);cx.setLineDash([]);
+    var s=KIND[o.k]+" "+o.id+"  "+o.c.toFixed(2);cx.font="600 12px Archivo,Arial,sans-serif";
+    cx.fillStyle=P.ac;cx.fillRect(x-5,y-23,cx.measureText(s).width+12,19);cx.fillStyle=P.bg;cx.fillText(s,x+1,y-9);
   });
 }
+function loop(){draw();raf=requestAnimationFrame(loop)}
+function play(){if(!raf&&!still&&seen&&!document.hidden)raf=requestAnimationFrame(loop)}
+function pause(){cancelAnimationFrame(raf);raf=0}
+if("IntersectionObserver" in window)new IntersectionObserver(function(e){seen=e[0].isIntersecting;if(seen)play();else pause()}).observe(cv);
+document.addEventListener("visibilitychange",function(){if(document.hidden)pause();else play()});
+addEventListener("resize",function(){var w=VW;size();if(Math.abs(VW-w)>1)seed();if(!raf)draw()});
+size();seed();
 
-/* ── MOBILE MENU ── */
-function toggleMenu() {
-  document.getElementById('mobileMenu').classList.toggle('open');
+/* ---------- Sensor views ---------- */
+var bb=[].slice.call(document.querySelectorAll(".bands button")),now=document.getElementById("now"),LABEL={visible:"visible light",thermal:"thermal infrared",infrared:"false-colour infrared",xray:"X-ray"};
+function view(b,keep){
+  root.dataset.band=b;bb.forEach(function(x){x.setAttribute("aria-pressed",x.dataset.b==b)});
+  now.textContent=LABEL[b];P=pal();if(!raf)draw();
+  if(keep)try{localStorage.setItem("band",b)}catch(e){}
 }
+bb.forEach(function(x){x.addEventListener("click",function(){view(x.dataset.b,1)})});
+addEventListener("keydown",function(e){
+  if(/INPUT|TEXTAREA/.test(e.target.tagName)||e.ctrlKey||e.metaKey||e.altKey)return;
+  var x=bb[+e.key-1];if(x)view(x.dataset.b,1);
+});
+view(LABEL[root.dataset.band]?root.dataset.band:"visible");play();
+
+/* ---------- Live GitHub numbers (the line stays empty if the request fails) ---------- */
+if(window.fetch)fetch("https://api.github.com/users/AISoltani").then(function(r){return r.ok?r.json():0}).then(function(u){
+  if(u&&u.public_repos)document.getElementById("gh").textContent=" ("+u.public_repos+" repositories, "+Number(u.followers).toLocaleString("en")+" followers)";
+}).catch(function(){});
+})();
 </script>
 </body>
 </html>
