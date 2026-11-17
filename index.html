@@ -105,10 +105,9 @@ summary:hover h3,[open]>summary h3{color:var(--accent)}
 .more p{max-width:40em}
 .more img{display:block;width:100%;height:auto;border:1px solid var(--line);background:#000}
 
-.gal{columns:3 17rem;column-gap:1rem;margin-top:1.8rem}
-.shot{break-inside:avoid;margin-bottom:1rem;background:var(--panel);border:1px solid var(--line)}
+.gal{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-top:1.8rem}
+.shot{min-width:0;background:var(--panel);border:1px solid var(--line)}
 .shot img{display:block;width:100%;height:auto}
-.shot figcaption{padding:.6rem .8rem;font-size:.92rem;color:var(--muted)}
 
 .kit{display:grid;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));gap:1rem;margin-top:1.8rem}
 .kit div{padding:1.1rem 1.2rem;background:var(--panel);border:1px solid var(--line)}
@@ -451,20 +450,20 @@ FIELDS.forEach(function(f){
 q.addEventListener("input",apply);apply();
 
 /* ---------- Photos from labs, campuses and conferences ----------
-   Each row: [file name in the top level of the Vison_advanced repository, caption, description for screen readers].
-   File names are case-sensitive. Leave the caption as "" to show a photo with no text.
-   A photo that cannot be loaded is skipped, and the section stays hidden until one loads. */
+   Each row: [file name in the top level of the Vison_advanced repository, description for screen readers].
+   File names are case-sensitive. A photo that cannot be loaded is skipped,
+   and the section stays hidden until one loads. */
 var PH=R+"Vison_advanced/refs/heads/main/";
 var PHOTOS=[
-["AILab.jpg","At the AI lab","People at an AI lab"],
-["Conference_Motion_Research_Poster.png","Poster session: human motion world models","A researcher standing beside a conference poster on human motion world models"],
-["conference.jpg","ECCV, main stage","A speaker on the main stage at the European Conference on Computer Vision"],
-["University-UBC.jpg","UBC Robson Square, Vancouver","The University of British Columbia sign at Robson Square"]
+["AILab.jpg","People at an AI lab"],
+["Conference_Motion_Research_Poster.png","A researcher standing beside a conference poster on human motion world models"],
+["conference.jpg","A speaker on the main stage at the European Conference on Computer Vision"],
+["University-UBC.jpg","The University of British Columbia sign at Robson Square"]
 ];
 var gal=$("gal");
 PHOTOS.forEach(function(p){
   var f=document.createElement("figure");f.className="shot";f.hidden=true;
-  f.innerHTML='<a class="zoom" href="'+PH+p[0]+'"><img alt="'+esc(p[2])+'" decoding="async"></a>'+(p[1]?"<figcaption>"+esc(p[1])+"</figcaption>":"");
+  f.innerHTML='<a class="zoom" href="'+PH+p[0]+'"><img alt="'+esc(p[1])+'" decoding="async"></a>';
   var im=f.querySelector("img");
   im.onload=function(){f.hidden=false;$("photos").hidden=false;$("nav-photos").hidden=false};
   im.onerror=function(){f.remove()};
