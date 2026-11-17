@@ -263,8 +263,8 @@ dialog button{display:block;margin:.6rem auto 0;padding:.5em 1.1em;font:inherit;
 </section>
 
 <section id="photos" hidden>
-  <h2>Conferences and labs</h2>
-  <p class="sub">Photos from computer vision conferences and AI labs. Select one to enlarge it.</p>
+  <h2>Labs, campuses and conferences</h2>
+  <p class="sub">Select a photo to enlarge it.</p>
   <div class="gal" id="gal"></div>
 </section>
 
@@ -450,21 +450,21 @@ FIELDS.forEach(function(f){
 });
 q.addEventListener("input",apply);apply();
 
-/* ---------- Photos from conferences and labs ----------
-   Each row: [file name in the root of the Vison_advanced repository, caption, description for screen readers].
-   A photo that is not in the repository yet is skipped, and the section stays hidden until one loads. */
+/* ---------- Photos from labs, campuses and conferences ----------
+   Each row: [file name in the top level of the Vison_advanced repository, caption, description for screen readers].
+   File names are case-sensitive. Leave the caption as "" to show a photo with no text.
+   A photo that cannot be loaded is skipped, and the section stays hidden until one loads. */
 var PH=R+"Vison_advanced/refs/heads/main/";
 var PHOTOS=[
-["keiser-ai-lab.jpg","AI Lab launch at Keiser University","A large group of students and staff in front of two screens that read AI Lab"],
-["vurvey-ai-labs.jpg","Vurvey AI Labs, University of South Carolina","A team working at a table in front of a wall of analytics screens"],
-["poster-session.jpg","Poster session: Towards Human Motion World Models via Executable Behaviour Representations","A researcher standing beside a conference poster"],
-["ubc-robson-square.jpg","UBC Robson Square, Vancouver","The University of British Columbia sign at 800 Robson Street"],
-["eccv-stage.jpg","ECCV, main stage","A speaker on stage at the European Conference on Computer Vision"]
+["AILab.jpg","At the AI lab","People at an AI lab"],
+["Conference_Motion_Research_Poster.png","Poster session: human motion world models","A researcher standing beside a conference poster on human motion world models"],
+["conference.jpg","ECCV, main stage","A speaker on the main stage at the European Conference on Computer Vision"],
+["University-UBC.jpg","UBC Robson Square, Vancouver","The University of British Columbia sign at Robson Square"]
 ];
 var gal=$("gal");
 PHOTOS.forEach(function(p){
   var f=document.createElement("figure");f.className="shot";f.hidden=true;
-  f.innerHTML='<a class="zoom" href="'+PH+p[0]+'"><img alt="'+esc(p[2])+'" decoding="async"></a><figcaption>'+esc(p[1])+"</figcaption>";
+  f.innerHTML='<a class="zoom" href="'+PH+p[0]+'"><img alt="'+esc(p[2])+'" decoding="async"></a>'+(p[1]?"<figcaption>"+esc(p[1])+"</figcaption>":"");
   var im=f.querySelector("img");
   im.onload=function(){f.hidden=false;$("photos").hidden=false;$("nav-photos").hidden=false};
   im.onerror=function(){f.remove()};
@@ -533,7 +533,7 @@ function draw(){
     }
     if(o.k==2){ /* three rays above the bulb that pulse */
       cx.globalAlpha=still?.6:.4+.3*Math.sin(ph+o.id);cx.lineWidth=2;cx.beginPath();
-      for(k=-1;k<2;k++){var a=k*.6-Math.PI/2,ac=Math.cos(a),as=Math.sin(a);cx.moveTo(o.x+ac*o.w*.38,bulbY+as*o.w*.38);cx.lineTo(o.x+ac*o.w*.5,bulbY+as*o.w*.5)}
+      for(k=-1;k<2;k++){var a=k*.6-Math.PI/2,cs=Math.cos(a),sn=Math.sin(a);cx.moveTo(o.x+cs*o.w*.38,bulbY+sn*o.w*.38);cx.lineTo(o.x+cs*o.w*.5,bulbY+sn*o.w*.5)}
       cx.stroke();
     }
     cx.globalAlpha=1;cx.lineWidth=2;cx.setLineDash(b=="xray"?[6,4]:[]);cx.strokeRect(x-4,y-4,o.w+8,o.h+8);cx.setLineDash([]);
@@ -550,7 +550,7 @@ if("IntersectionObserver" in window)new IntersectionObserver(function(e){seen=e[
    A rolling terrain is sampled on a grid, moved toward the camera and projected with perspective.
    Height picks the colour from the current sensor view's colour map. A scan line sweeps away from
    the camera, and a few wireframe boxes ride the terrain like 3D detections.
-   To make it calmer or stronger, change the opacity of #depth in the CSS. */
+   To make it calmer or stronger, set an opacity on #depth in the CSS. */
 var bg=$("depth"),gx=bg.getContext("2d"),DW=0,DH=0,F=1,KX=1,draf=0,T0=0,prev=0,lag=0,coarse=1,scr=0,yaw=0,aim=0,sa=0,ca=1,sp=0,cp=1,mid=0,LUT=[],NL=22;
 var PITCH=.22,ZN=1,ZF=44,DZ=.66,DX=.62,CAMY=3.6,Q=[0,0],C8=[],EDGE=[0,1,2,3,4,5,6,7,0,2,1,3,4,6,5,7,0,4,1,5,2,6,3,7];
 var MAPS={visible:["16388F","2F6BFF","86B8FF","F1F7FF"],thermal:["4A1486","A52C7A","E0533A","F98E09","FCFFA4"],infrared:["0B4A5E","2AA7BD","C2183A","FF5C7A","FFE1DC"],xray:["1B3640","3E6470","8FB9C6","E8F6FA"]};
